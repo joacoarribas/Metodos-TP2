@@ -27,29 +27,25 @@ double metodoPotencia(Matriz& A, vector<double>& x) {
   vector<double> y;
   int length = x.size();
   int k = 0;
+  double c2;
 
   y = A*x;
+
   double c1 = maxAbs(y);
+  double aux = c1;
 
-  for (size_t i = 0; i < length; ++i)
-    x[i] = y[i] / c1; 
+  do {
+    c1 = aux; // La primera vez esto no surte efecto
 
-  y = A*x;
-  double c2 = maxAbs(y);
-
-  while (!igualdadConTolerancia(c1, c2) && k < 1500) {
-
-    for (size_t i = 0; i < length; ++i)
-      x[i] = y[i] / c2; 
+    for (size_t i = 0; i < length; ++i) // Normalizo vector
+      x[i] = y[i] / c1; 
 
     y = A*x;
 
-    double aux = c2;
     c2 = maxAbs(y);
-    c1 = aux;
-
-    ++k;
-  }
+    aux = c2;
+  
+  } while(!igualdadConTolerancia(c1, c2) && k < 1500); // Experimentar con metodo de corte Y Epsilon para la tolerancia
 
   return c2;
 
@@ -71,7 +67,7 @@ int main(int argc,char** argv) {
   A[2][2] =  3;
 
 
-  vector<double> x(3, 1);
+  vector<double> x(3, 1); // x = (1, 1, 1)
  // std::cout << "------------" << std::endl;
 
  // for (size_t i = 0; i < 3; ++i) 
@@ -81,36 +77,15 @@ int main(int argc,char** argv) {
   double res = metodoPotencia(A, x);
 
   std::cout << "El resultado es: " << std::fixed << res << std::endl;
+
+  std::cout << "El autovector asociado es: " << std::endl;
+
+  for (size_t i = 0; i < 3; ++i) 
+    std::cout << x[i] << " ";
+  std::cout << std::endl;
+
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
