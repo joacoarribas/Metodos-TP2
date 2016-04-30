@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 #include "clases/Matriz.h"
 
 #define EPSILON 1.19e-6f
@@ -83,7 +84,27 @@ int main(int argc,char** argv) {
   for (size_t i = 0; i < 3; ++i) 
     std::cout << x[i] << " ";
   std::cout << std::endl;
+  
+  std::vector<int> y(10);
+  for (size_t i = 0; i < 10; ++i)
+    y[i] = 9-i;
 
+
+  for (size_t i = 0; i < 4; ++i) {
+    for (size_t i = 0; i < 10; ++i) 
+      std::cout << y[i] << " ";
+    std::cout << std::endl;
+    std::nth_element(y.begin(), y.begin()+i, y.end());
+  }
+
+  for (size_t i = 0; i < 10; ++i) 
+    std::cout << y[i] << " ";
+  std::cout << std::endl;
+
+  /*
+  std::cout << "El maximo es: " << *std::max_element(x.begin(), x.end()) << std::endl; 
+  std::cout << " y su posicion es: " << std::distance(x.begin(), std::max_element(x.begin(), x.end())) << std::endl;
+*/
   return 0;
 }
 

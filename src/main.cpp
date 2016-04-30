@@ -19,36 +19,22 @@ double dameNorma(std::vector<double> x) {
   return sqrt(norm);
 }
 
-int indiceMinimo(std::vector<double> x) {
-  int min = 99999;
-  int length = x.size();
-  int j = 0;
+int indiceMinimo(std::vector<double>& x) {
 
-  for (size_t i = 0; i < length; ++i) {
-    if (x[i] < min) {
-      min = x[i];
-      j = i;
-    } 
-  }
+  std::vector<double>::iterator itMin = std::min_element(x.begin(), x.end()); 
+  int posMin = std::distance(x.begin(), itMin);
 
-  return j;
-
+  x[posMin] = 99999999; // Tengo que hacer esto porque calculo k minimos. No se me ocurre otra manera ahora
+  
+  return posMin;
 }
 
-int indiceMaximo(std::vector<int> x) {
-  int max = 0;
-  int length = x.size();
-  int j = 0;
+int indiceMaximo(std::vector<int>& x) {
 
-  for (size_t i = 0; i < length; ++i) {
-    if (x[i] < max) {
-      max = x[i];
-      j = i;
-    } 
-  }
+  std::vector<int>::iterator itMax = std::max_element(x.begin(), x.end()); 
+  int posMax = std::distance(x.begin(), itMax);
 
-  return j;
-
+  return posMax;
 }
     
 char dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos) {
@@ -66,33 +52,39 @@ char dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecino
 
     y[i] = dameNorma(x);
       // quiero sacar ccantidad de vecinos etiquetas (de 0 a 9). Sacar el maximo de ahí.
-      
-    }
+  }
+
+  // El vector y tiene en la i-esima posicion la norma |imagen - y[i]|_2
 
   std::vector<int> labels(9, 0);
 
   while (vecinos > 0) {
-    int i = indiceMinimo(y);
-    char etiqueta = imagenesTrain.dameEtiqueta(i);
+    int i = indiceMinimo(y); // Me fijo cual es la imagen que minimiza la norma en cada iteracion
+    char etiqueta = imagenesTrain.dameEtiqueta(i); // Me fijo cual es la etiqueta de dicho minimo
     labels[etiqueta]++;
 
     vecinos--;
   }
 
-  return indiceMaximo(labels);
+  return indiceMaximo(labels); // Devuelvo el "más votado"
  
 }
 
-void KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
+int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
 
   int filas = imagenesTest.dimensionFilas();
+  int cantidadDeAciertos = 0;
   
   for (size_t i = 0; i < filas; ++i) {
 
     char etiqueta = dameEtiqueta(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
-    imagenesTest.etiquetar(i, etiqueta);
-    
+    imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
+
+    if (etiqueta = imagenesTest.dameEtiqueta(i))
+      cantidadDeAciertos++;
   }
+
+  return cantidadDeAciertos; // Esto no sé si es necesario aún
 
 }
 
@@ -125,9 +117,9 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   test = path.append("test.csv"); 
 
   std::ifstream fileTrain (train.c_str());
-  std::ifstream fileTest (test.c_str());
+  std::ifstream fileTest (test.c_str()); // Hasta aca sólo instancie variables
 
-  while (getline (fileData, lineData)) { // Pido las k lineas
+  while (getline (fileData, lineData)) { // Pido las K lineas
 
     std::istringstream issData(lineData);
 
@@ -156,7 +148,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
       ++i;
     }
 
-    // Ahora tengo el tamaño de la matrix  para poder instanciarla
+    // Ahora tengo el tamaño de la matrix para poder instanciarla
 
     int tamImagen = 784;
     Matriz imagenesTrain(cantImagenesTrain, tamImagen);
@@ -164,7 +156,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
     int h = 0; // Marca el índice de imagenesTrain
     int r = 0; // Marca el índice de imagenesTest
-    getline (fileTrain, lineTrain); // Descarto la primer línea que sólo tiene strings
+    getline (fileTrain, lineTrain); // Descarto la primer línea que sólo tiene strings "label, pixel0, ..."
 
     for (int k = 0; k < cantImagenesTotales; ++k) {
     
@@ -192,13 +184,13 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
         char etiqueta;
         issTrain >> etiqueta;
-        imagenesTrain.etiquetar(r, etiqueta);
+        imagenesTest.etiquetar(r, etiqueta);
 
         double pixel;
         int j = 0;
 
         while (issTrain >> pixel) {
-          imagenesTrain[r][j] = pixel;
+          imagenesTest[r][j] = pixel;
           ++j;
         }
 
