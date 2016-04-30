@@ -26,12 +26,14 @@ class Matriz {
 
     Matriz& operator - (Matriz& m);
 
-    vector<float>& operator [] (int fila);
+    vector<double>& operator [] (int fila);
 
-    void randomizar(int semilla);
-    void transponer();
+    void etiquetar(int i, char etiqueta);
     void mostrar();
+    void transponer();
+    void randomizar(int semilla);
 
+    char dameEtiqueta(int i);
     int dimensionFilas();
     int dimensionColumnas(); 
 
@@ -42,7 +44,8 @@ class Matriz {
 	 *******************************/ 
 
     int filas, columnas;
-    vector< vector<float> > matriz;
+    vector< vector<double> > matriz;
+    vector<char> etiquetas;
 
 	/*******************************
 	 *          Funciones          *

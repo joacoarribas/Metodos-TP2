@@ -3,14 +3,20 @@
 Matriz::Matriz(int filas, int columnas) {
   this->filas    = filas;
   this->columnas = columnas;
-  vector< vector<float> > m(filas, vector<float>(columnas));
+  vector< vector<double> > m(filas, vector<double>(columnas));
   this->matriz = m;
+  vector<char> v(filas, -1);
+  this->etiquetas = v;
 
   for (int i = 0; i < filas; ++i) {
-    vector<float> columna(filas);
+    vector<double> columna(filas);
     matriz[i] = columna;
   }
 
+}
+
+char Matriz::dameEtiqueta(int i) {
+  return this->etiquetas[i];
 }
 
 int Matriz::dimensionFilas() {
@@ -19,6 +25,10 @@ int Matriz::dimensionFilas() {
 
 int Matriz::dimensionColumnas(){
   return this->columnas;
+}
+
+void Matriz::etiquetar(int i, char etiqueta){
+  this->etiquetas[i] = etiqueta;
 }
 
 void Matriz::transponer() {
@@ -120,7 +130,7 @@ Matriz& Matriz::operator - (Matriz& m) {
   return *this;
 }
 
-vector<float>& Matriz::operator [] (int fila) {
+vector<double>& Matriz::operator [] (int fila) {
       return this->matriz[fila];
 }
 
