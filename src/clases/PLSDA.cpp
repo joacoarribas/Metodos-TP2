@@ -3,12 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-class PLS {
-private:
-	Matriz m;
+class PLSDA {
 
 public:
-	static Matriz& PLSMethod(Matriz valores, std::vector<unsigned char> &etiquetas, int dimensiones) {
+
+	PLSDA() {}
+
+	Matriz& PLSDAMethod(Matriz valores, std::vector<unsigned char> &etiquetas, int dimensiones) {
 		//para cargar el vector
 		srand (time(NULL));
 		
@@ -113,7 +114,7 @@ public:
 		return transformacionCaracteristica(valores, w, n, dimensiones); 
 	}
 
-	static double multiplicarVectores(vector<double> a, vector<double> b) {
+	double multiplicarVectores(vector<double> a, vector<double> b) {
 		double result = 0;
 
 		for (int i=0; i<a.size(); ++i) {
@@ -123,7 +124,7 @@ public:
 		return result;
 	}
 
-	static void normalizar(vector<double> &x) {
+	void normalizar(vector<double> &x) {
 		double norma2 = 0;
 		for (int i=0; i<x.size(); ++i) {
 			norma2 = norma2 + (x[i] * x[i]);
@@ -136,13 +137,13 @@ public:
 		}		
 	}
 
-	static void cargarVector(vector<double> &x) {
+	void cargarVector(vector<double> &x) {
 		for (int i=0; i<x.size(); ++i) {
 			x[i] = rand() % 10;
 		}
 	}
 
-	static Matriz& transformacionCaracteristica(Matriz m, vector< vector<double> > w, int n, int dimensiones) {
+	Matriz& transformacionCaracteristica(Matriz m, vector< vector<double> > w, int n, int dimensiones) {
 		Matriz * resultado = new Matriz(n, dimensiones); // la nueva matriz usa el parametro de dimensiones
 
 		for (int i=0; i<n; ++i) {
@@ -156,3 +157,7 @@ public:
 		return *resultado;
 	}
 };
+
+int main() {
+	return 0;
+}

@@ -14,6 +14,9 @@ main: main.cpp
 metodoPotencia: metodoPotencia.cpp
 	$(CC) metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) metodoPotencia
 
+PLSDA:
+	$(CC) clases/PLSDA.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PLSDA
+
 matriz: clases/Matriz.cpp
 	$(CC) clases/Matriz.cpp $(CFLAGS) matriz
 
@@ -25,3 +28,4 @@ clean:
 	rm -f ./*.o metodoPotencia
 	rm -f clases/*.o matriz
 	rm -f clases/*.o matrizsimetrica
+	rm -f clases/*.o PLS-DA
