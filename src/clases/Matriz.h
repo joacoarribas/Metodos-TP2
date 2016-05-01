@@ -18,22 +18,21 @@ class Matriz {
     Matriz(int filas, int columnas);
 
     Matriz& operator * (int i);
-    vector<double>& operator * (vector<double>& m);
     Matriz& operator * (Matriz& m);
     Matriz& operator * (MatrizSimetrica& m);
+    vector<double>& operator * (vector<double>& m);
 
     Matriz& operator + (Matriz& m);
-
     Matriz& operator - (Matriz& m);
 
-    vector<float>& operator [] (int fila);
+    vector<double>& operator [] (int fila);
 
+    Matriz& transponer();
     void randomizar(int semilla);
-    void transponer();
     void mostrar();
 
     int dimensionFilas();
-    int dimensionColumnas(); 
+    int dimensionColumnas();
 
   private:
 
@@ -42,7 +41,7 @@ class Matriz {
 	 *******************************/ 
 
     int filas, columnas;
-    vector< vector<float> > matriz;
+    vector< vector<double> > matriz;
 
 	/*******************************
 	 *          Funciones          *
