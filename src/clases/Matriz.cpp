@@ -5,12 +5,23 @@ Matriz::Matriz(int filas, int columnas) {
   this->columnas = columnas;
   vector< vector<double> > m(filas, vector<double>(columnas));
   this->matriz = m;
+  vector<char> v(filas, -1);
+  this->etiquetas = v;
+  this->estimaciones = v;
 
   for (int i = 0; i < filas; ++i) {
     vector<double> columna(filas);
     matriz[i] = columna;
   }
 
+}
+
+char Matriz::dameEtiqueta(int i) {
+  return this->etiquetas[i];
+}
+
+char Matriz::dameEstimacion(int i) {
+  return this->estimaciones[i];
 }
 
 int Matriz::dimensionFilas() {
@@ -21,9 +32,16 @@ int Matriz::dimensionColumnas(){
   return this->columnas;
 }
 
+void Matriz::etiquetar(int i, char etiqueta){
+  this->etiquetas[i] = etiqueta;
+}
+
+void Matriz::estimar(int i, char etiqueta){
+  this->estimaciones[i] = etiqueta;
+}
+
 Matriz& Matriz::transponer() {
   Matriz * nueva = new Matriz(this->columnas, this->filas);
-
   for (int f = 0; f < this->filas; ++f) {
     for (int c = f+1; c < columnas; ++c) {
       nueva->matriz[f][c] = this->matriz[c][f];
