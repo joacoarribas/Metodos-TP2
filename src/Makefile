@@ -11,6 +11,9 @@ all: $(BINARIES)
 main: main.cpp
 	$(CC) main.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) main
 
+mainTest: mainTest.cpp
+	$(CC) mainTest.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) mainTest
+
 metodoPotencia: metodoPotencia.cpp
 	$(CC) metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) metodoPotencia
 
@@ -25,6 +28,7 @@ matrizsimetrica: clases/MatrizSimetrica.cpp
 
 clean:
 	rm -f ./*.o main
+	rm -f ./*.o mainTest
 	rm -f ./*.o metodoPotencia
 	rm -f clases/*.o matriz
 	rm -f clases/*.o matrizsimetrica
