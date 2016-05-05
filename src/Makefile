@@ -9,13 +9,13 @@ BINARIES = main matriz matrizsimetrica gauss descomposicionLU metodoPotencia
 all: $(BINARIES)
 
 main: main.cpp
-	$(CC) main.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) main
+	$(CC) main.cpp clases/PLSDA.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) main
 
 metodoPotencia: metodoPotencia.cpp
 	$(CC) metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) metodoPotencia
 
 PLSDA:
-	$(CC) clases/PLSDA.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PLSDA
+	$(CC) clases/PLSDA.cpp metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PLSDA
 
 matriz: clases/Matriz.cpp
 	$(CC) clases/Matriz.cpp $(CFLAGS) matriz
@@ -28,4 +28,4 @@ clean:
 	rm -f ./*.o metodoPotencia
 	rm -f clases/*.o matriz
 	rm -f clases/*.o matrizsimetrica
-	rm -f clases/*.o PLS-DA
+	rm -f clases/*.o PLSDA

@@ -1,5 +1,6 @@
 #include "clases/Matriz.h"
 #include "clases/MatrizSimetrica.h"
+#include "clases/PLSDA.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -80,7 +81,7 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
     char etiqueta = dameEtiqueta(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
     imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
 
-    if (etiqueta = imagenesTest.dameEtiqueta(i))
+    if (etiqueta == imagenesTest.dameEtiqueta(i))
       cantidadDeAciertos++;
   }
 
@@ -215,9 +216,13 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
         }
 
       case 2: { // Método KNN+PLS-DA
+        PLSDA * pls = new PLSDA();
+        Matriz& imagenesTrainReducida = pls->PLSDAMethod(imagenesTrain, 5); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        
+        KNN(imagenesTrain, imagenesTest, vecinos);
 
-              
-        }
+        delete(pls);
+      }
 
     }
 
