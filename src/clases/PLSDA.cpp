@@ -69,7 +69,7 @@ Matriz& PLSDA::PLSDAMethod(Matriz valores, int dimensiones) {
 
 		//calcular wi el autovector asociado al mayor autovalo de Mi
 		std::vector<double> &wi = w[i];
-		cargarVector(wi);
+		Matriz::cargarVector(wi);
 		metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
 
 		//normalizar wi con norma 2
@@ -103,15 +103,6 @@ void PLSDA::normalizar(std::vector<double> &x) {
 	for (int i=0; i<x.size(); ++i) {
 		x[i] = x[i] / norma2;
 	}		
-}
-
-void PLSDA::cargarVector(std::vector<double> &x) {
-	//para cargar el vector
-	srand (time(NULL));
-
-	for (int i=0; i<x.size(); ++i) {
-		x[i] = rand() % 10;
-	}
 }
 
 Matriz& PLSDA::transformacionCaracteristica(Matriz m, std::vector< std::vector<double> > w, int n, int dimensiones) {

@@ -174,6 +174,15 @@ void Matriz::mostrar() {
 }
 
 
+void Matriz::cargarVector(std::vector<double> &x) {
+  //para cargar el vector
+  srand (time(NULL));
+
+  for (int i=0; i<x.size(); ++i) {
+    x[i] = rand() % 10;
+  }
+}
+
 Matriz& Matriz::multiplicarVectoresDameMatriz(std::vector<double> a, std::vector<double> b) {
   Matriz * result = new Matriz(a.size(), a.size());
 
