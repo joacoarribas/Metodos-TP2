@@ -27,6 +27,9 @@ class Matriz {
 
     vector<double>& operator [] (int fila);
 
+    static double multiplicarVectoresDameValor(std::vector<double> a, std::vector<double> b);
+    static Matriz& multiplicarVectoresDameMatriz(std::vector<double> a, std::vector<double> b);
+    
     void etiquetar(int i, int etiqueta);
     void estimar(int i, int etiqueta);
     void mostrar();

@@ -173,6 +173,29 @@ void Matriz::mostrar() {
   }
 }
 
+
+Matriz& Matriz::multiplicarVectoresDameMatriz(std::vector<double> a, std::vector<double> b) {
+  Matriz * result = new Matriz(a.size(), a.size());
+
+  for (int i=0; i<a.size() ; ++i) {
+    for (int j=0; j<a.size() ; ++j) {
+      (*result)[i][j] = a[i] * b[j];
+    }
+  }
+
+  return *result;
+}
+
+double Matriz::multiplicarVectoresDameValor(std::vector<double> a, std::vector<double> b) {
+  double result = 0;
+
+  for (int i=0; i<a.size(); ++i) {
+    result += a[i] * b[i];
+  }
+
+  return result;
+}
+
 	/*******************************
 	 *     Funciones privadas      *
 	 *******************************/ 

@@ -82,24 +82,14 @@ Matriz& PLSDA::PLSDAMethod(Matriz valores, int dimensiones) {
 		normalizar(ti);
 		
 		//	actualizar X como X − ti^t * ti * X;
-		X = X - (X * multiplicarVectores(ti, ti));
+		X = X - (X * Matriz::multiplicarVectoresDameValor(ti, ti));
 
 		//	actualizar Y como Y − ti^t * ti * Y;
-		Y = Y - (Y * multiplicarVectores(ti, ti));
+		Y = Y - (Y * Matriz::multiplicarVectoresDameValor(ti, ti));
 	}
 
 	//aplico transformacion caracteristica (w) a las imagenes
 	return transformacionCaracteristica(valores, w, n, dimensiones); 
-}
-
-double PLSDA::multiplicarVectores(std::vector<double> a, std::vector<double> b) {
-	double result = 0;
-
-	for (int i=0; i<a.size(); ++i) {
-		result += a[i] * b[i];
-	}
-
-	return result;
 }
 
 void PLSDA::normalizar(std::vector<double> &x) {
@@ -130,7 +120,7 @@ Matriz& PLSDA::transformacionCaracteristica(Matriz m, std::vector< std::vector<d
 	for (int i=0; i<n; ++i) {
 		for (int j=0; j<dimensiones; ++j) {
 			for (int k=0; k<dimensiones; ++k){
-				(*resultado)[i][j] = multiplicarVectores(w[i], m[k]); //multiplico cada imagen por la transformacion correspondiente
+				(*resultado)[i][j] = Matriz::Matriz::multiplicarVectoresDameValor(w[i], m[k]); //multiplico cada imagen por la transformacion correspondiente
 			}
 		}
 	}

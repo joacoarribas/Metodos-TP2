@@ -13,7 +13,6 @@ class PLSDA {
     PLSDA();
     Matriz& transformacionCaracteristica(Matriz m, vector< vector<double> > w, int n, int dimensiones);
     Matriz& PLSDAMethod(Matriz valores, int dimensiones);
-    double multiplicarVectores(vector<double> a, vector<double> b);
     void cargarVector(vector<double> &x);
     void normalizar(vector<double> &x);
 };
