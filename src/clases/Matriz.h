@@ -29,7 +29,8 @@ class Matriz {
 
     static double multiplicarVectoresDameValor(std::vector<double> a, std::vector<double> b);
     static Matriz& multiplicarVectoresDameMatriz(std::vector<double> a, std::vector<double> b);
-    
+    static void cargarVector(std::vector<double> &x);
+
     void etiquetar(int i, int etiqueta);
     void estimar(int i, int etiqueta);
     void mostrar();
