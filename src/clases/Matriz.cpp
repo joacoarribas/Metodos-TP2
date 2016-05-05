@@ -5,7 +5,7 @@ Matriz::Matriz(int filas, int columnas) {
   this->columnas = columnas;
   vector< vector<double> > m(filas, vector<double>(columnas));
   this->matriz = m;
-  vector<char> v(filas, -1);
+  vector<int> v(filas, -1);
   this->etiquetas = v;
   this->estimaciones = v;
 
@@ -16,11 +16,11 @@ Matriz::Matriz(int filas, int columnas) {
 
 }
 
-char Matriz::dameEtiqueta(int i) {
+int Matriz::dameEtiqueta(int i) {
   return this->etiquetas[i];
 }
 
-char Matriz::dameEstimacion(int i) {
+int Matriz::dameEstimacion(int i) {
   return this->estimaciones[i];
 }
 
@@ -32,11 +32,11 @@ int Matriz::dimensionColumnas(){
   return this->columnas;
 }
 
-void Matriz::etiquetar(int i, char etiqueta){
+void Matriz::etiquetar(int i, int etiqueta){
   this->etiquetas[i] = etiqueta;
 }
 
-void Matriz::estimar(int i, char etiqueta){
+void Matriz::estimar(int i, int etiqueta){
   this->estimaciones[i] = etiqueta;
 }
 
@@ -158,10 +158,14 @@ void Matriz::mostrar() {
   for (int f = 0; f < filas; ++f) {
     cout << "  ";
     for (int c = 0; c < columnas; ++c) {
-      if (matriz[f][c] < 0) {
-        cout << "| " << matriz[f][c] << "  |" << " ";
+      if (matriz[f][c] >= 100) {
+        cout << "| " << matriz[f][c] << " |" << " ";
       } else {
-        cout << "|  " << matriz[f][c] << "  |" << " ";
+        if (matriz[f][c] >= 10) {
+          cout << "|  " << matriz[f][c] << " |" << " ";
+        } else {
+          cout << "|  " << matriz[f][c] << "  |" << " ";
+        }
       }
     }
 
