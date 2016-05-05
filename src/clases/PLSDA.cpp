@@ -2,13 +2,13 @@
 
 PLSDA::PLSDA() {}
 
-Matriz& PLSDA::PLSDAMethod(Matriz valores, int dimensiones) {
+Matriz& PLSDA::PLSDAMethod(Matriz& valores, int dimensiones) {
 	//revizar valores de 1...n, cada uno es vec de m
 	long n = valores.dimensionFilas();
 	long m = valores.dimensionColumnas();
 	double raizN = sqrt(n-1);
 	Matriz X(n, m);
-	Matriz Y(n, m);
+	Matriz Y(n, 10);
 
 	//calcular mu = promedio de la suma de todos los vectores
 	double promedios[n];
@@ -16,7 +16,8 @@ Matriz& PLSDA::PLSDAMethod(Matriz valores, int dimensiones) {
 		for (int j=0; j<m; ++j) {
 			promedios[i] += valores[i][j];
 		}
-		promedios[i] /= m; //esto puede traer error
+
+		promedios[i] /= (double)m; //esto puede traer error
 	}
 
 	//X matriz de nXm donde cada fila es traspuesta(x_i − μ)/raiz(n − 1)
@@ -27,7 +28,7 @@ Matriz& PLSDA::PLSDAMethod(Matriz valores, int dimensiones) {
 	}
 
 	//defino preY de nX10 que tiene 1 en preY_i,j si la i-esima muestra de la base corresponde al digito j-1
-								 //-1 en caso contrario
+  //-1 en caso contrario
 	Matriz preY(n, 10);
 	for (int i=0; i<n; ++i) {
 		for (int j=0; j<10; ++j) {
@@ -37,7 +38,7 @@ Matriz& PLSDA::PLSDAMethod(Matriz valores, int dimensiones) {
 				preY[i][j] = -1;
 			}
 		}
-	}		
+  }
 
 	//defino promY de nX1 con promY_i = promedio de la fila i-esima de preY
 	double promY[n];
@@ -70,7 +71,7 @@ Matriz& PLSDA::PLSDAMethod(Matriz valores, int dimensiones) {
 		//calcular wi el autovector asociado al mayor autovalo de Mi
 		std::vector<double> &wi = w[i];
 		Matriz::cargarVector(wi);
-		metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
+    met::metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
 
 		//normalizar wi con norma 2
 		normalizar(wi);
@@ -105,13 +106,14 @@ void PLSDA::normalizar(std::vector<double> &x) {
 	}		
 }
 
-Matriz& PLSDA::transformacionCaracteristica(Matriz m, std::vector< std::vector<double> > w, int n, int dimensiones) {
+
+Matriz& PLSDA::transformacionCaracteristica(Matriz& m, std::vector< std::vector<double> >& w, int n, int dimensiones) {
 	Matriz * resultado = new Matriz(n, dimensiones); // la nueva matriz usa el parametro de dimensiones
 
 	for (int i=0; i<n; ++i) {
 		for (int j=0; j<dimensiones; ++j) {
 			for (int k=0; k<dimensiones; ++k){
-				(*resultado)[i][j] = Matriz::Matriz::multiplicarVectoresDameValor(w[i], m[k]); //multiplico cada imagen por la transformacion correspondiente
+				(*resultado)[i][j] = Matriz::multiplicarVectoresDameValor(w[i], m[k]); //multiplico cada imagen por la transformacion correspondiente
 			}
 		}
 	}

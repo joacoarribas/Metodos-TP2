@@ -217,9 +217,15 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
       case 2: { // Método KNN+PLS-DA
         PLSDA * pls = new PLSDA();
-        Matriz& imagenesTrainReducida = pls->PLSDAMethod(imagenesTrain, 5); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        Matriz& imagenesTrainReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+
+        // Hay que preguntar si se hace exactamente lo mismo con los dos o no.
+        PLSDA * pls = new PLSDA();
+        Matriz& imagenesTestReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
         
-        KNN(imagenesTrain, imagenesTest, vecinos);
+        // Para cada imagen en imagenesTests aplicarle la transformación característica (para reducir su dimensión)
+
+        KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
 
         delete(pls);
       }

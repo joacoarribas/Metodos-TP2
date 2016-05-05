@@ -5,14 +5,14 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Matriz.h"
-#include "../metodoPotencia.cpp"
+#include "../metodoPotencia.h"
 
 class PLSDA {
 
   public:
     PLSDA();
-    Matriz& transformacionCaracteristica(Matriz m, vector< vector<double> > w, int n, int dimensiones);
-    Matriz& PLSDAMethod(Matriz valores, int dimensiones);
+    Matriz& transformacionCaracteristica(Matriz& m, vector< vector<double> >& w, int n, int dimensiones);
+    Matriz& PLSDAMethod(Matriz& valores, int dimensiones);
     void normalizar(vector<double> &x);
 };
 

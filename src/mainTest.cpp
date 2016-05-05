@@ -1,24 +1,20 @@
-#include "clases/Matriz.h"
-#include "clases/MatrizSimetrica.h"
+//#include "clases/Matriz.h"
+#include "metodoPotencia.cpp"
+#include "clases/PLSDA.h"
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <math.h>
 #include <iostream> 
 #include <algorithm>
 #include <map>
 #include <queue>
 #include <sys/time.h>
 
-typedef std::priority_queue<int, std::vector<int>, std::greater<int> > min_heap; 
-
 double dameNorma(std::vector<double>& x) {
   double norm = 0;
   size_t length = x.size();
-  for (size_t i = 0; i < length; ++i) {
+  for (size_t i = 0; i < length; ++i)
     norm += x[i] * x[i];
-//    std::cout << "norm[ " << i << " ]: " << norm << std::endl;
-  }
     
   return sqrt(norm);
 }
@@ -55,13 +51,13 @@ char dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecino
       x[j] = imagen[j] - imagenesTrain[i][j];
 
     y[i] = dameNorma(x);
-    std::cout << "norma: " << y[i] << std::endl;
+//    std::cout << "norma: " << y[i] << std::endl;
       // quiero sacar ccantidad de vecinos etiquetas (de 0 a 9). Sacar el maximo de ahí.
   }
 
   // El vector y tiene en la i-esima posicion la norma |imagen - y[i]|_2
 
-  std::vector<int> labels(3, 0);
+  std::vector<int> labels(9, 0);
 
   while (vecinos > 0) {
     int i = indiceMinimo(y); // Me fijo cual es la imagen que minimiza la norma en cada iteracion
@@ -86,13 +82,13 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
     //std::cout << "etiqueta " << etiqueta <<std::endl;
     imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
 
-    
+ /*   
     std::cout << "la etiqueta de la imagen " << i << " es " << imagenesTest.dameEtiqueta(i) << std::endl;
     std::cout << "su estimación fue: " << imagenesTest.dameEstimacion(i) << std::endl;
 
- //   std::cout << "etiqueta: " << imagenesTest.dameEtiqueta(i) << std::endl;
- //   std::cout << "estimación: " << imagenesTest.dameEstimacion(i) << std::endl;
-
+    std::cout << "etiqueta: " << imagenesTest.dameEtiqueta(i) << std::endl;
+    std::cout << "estimación: " << imagenesTest.dameEstimacion(i) << std::endl;
+  */
     if (etiqueta == imagenesTest.dameEtiqueta(i))
       cantidadDeAciertos++;
   }
@@ -128,11 +124,11 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   issData >> dimensiones;
   issData >> particiones;
 
-  train = path.append("Test.csv"); 
+//  train = path.append("Test.csv"); 
+  train = path.append("train.csv"); 
   test = path.append("test.csv"); 
 
   std::ifstream fileTest (test.c_str()); // Hasta aca sólo instancie variables
-
 
   while (getline (fileData, lineData)) { // Pido las K lineas
 
@@ -167,7 +163,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
     // Ahora tengo el tamaño de la matrix para poder instanciarla
 
-    int tamImagen = 6;
+    int tamImagen = 784;
     Matriz imagenesTrain(cantImagenesTrain, tamImagen);
     Matriz imagenesTest(cantImagenesTest, tamImagen);
 
@@ -241,6 +237,20 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
       case 2: { // Método KNN+PLS-DA
 
+                if (z == 0) {
+
+        PLSDA * pls = new PLSDA();
+        Matriz& imagenesTrainReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+
+        // Hay que preguntar si se hace exactamente lo mismo con los dos o no.
+        Matriz& imagenesTestReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        
+        // Para cada imagen en imagenesTests aplicarle la transformación característica (para reducir su dimensión)
+
+        KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
+
+        delete(pls);
+                }
               
         }
 

@@ -1,10 +1,8 @@
-#include <cmath>
-#include <algorithm>
-#include "clases/Matriz.h"
+#include "metodoPotencia.h"
 
 #define EPSILON 1.19e-6f
 
-bool igualdadConTolerancia(double a, double b) {
+bool met::igualdadConTolerancia(double a, double b) {
   if (abs(a - b) < EPSILON) {
     return true;
   } else {
@@ -12,7 +10,7 @@ bool igualdadConTolerancia(double a, double b) {
   }
 }
 
-double maxAbs(vector<double>& x) {
+double met::maxAbs(vector<double>& x) {
   double max = std::abs(x[0]);
   int length = x.size();
 
@@ -24,7 +22,7 @@ double maxAbs(vector<double>& x) {
   return max;
 }
 
-double metodoPotencia(Matriz& A, vector<double>& x) {
+double met::metodoPotencia(Matriz& A, vector<double>& x) {
   vector<double> y;
   int length = x.size();
   int k = 0;
@@ -51,6 +49,7 @@ double metodoPotencia(Matriz& A, vector<double>& x) {
   return c2;
 
 }
+/*
 
 int main(int argc,char** argv) {
   Matriz A(3,3);
@@ -101,13 +100,13 @@ int main(int argc,char** argv) {
     std::cout << y[i] << " ";
   std::cout << std::endl;
 
-  /*
+  
   std::cout << "El maximo es: " << *std::max_element(x.begin(), x.end()) << std::endl; 
   std::cout << " y su posicion es: " << std::distance(x.begin(), std::max_element(x.begin(), x.end())) << std::endl;
-*/
+/
   return 0;
 }
-
+*/
 
 /*
 
