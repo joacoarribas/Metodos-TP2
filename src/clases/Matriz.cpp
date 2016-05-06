@@ -3,16 +3,13 @@
 Matriz::Matriz(int filas, int columnas) {
   this->filas    = filas;
   this->columnas = columnas;
+
   vector< vector<double> > m(filas, vector<double>(columnas));
   this->matriz = m;
+
   vector<int> v(filas, 0);
   this->etiquetas = v;
   this->estimaciones = v;
-
-  for (int i = 0; i < filas; ++i) {
-    vector<double> columna(filas);
-    matriz[i] = columna;
-  }
 
 }
 

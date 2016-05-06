@@ -91,7 +91,6 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
   for (int i = 0; i < filas; ++i) {
 
     int etiqueta = dameEtiqueta(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
-    //std::cout << "etiqueta " << etiqueta <<std::endl;
     imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
 
  /*   
@@ -139,8 +138,9 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   issData >> particiones;
 
 //  train = path.append("Test.csv"); 
+  train = path.append("train.csv"); 
 //  train = path.append("train2.csv"); 
-  train = path.append("train3.csv"); 
+//  train = path.append("train3.csv"); 
   test = path.append("test.csv"); 
 
   std::ifstream fileTest (test.c_str()); // Hasta aca sólo instancie variables
@@ -177,8 +177,16 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
     }
 
     // Ahora tengo el tamaño de la matrix para poder instanciarla
+    //
 
     int tamImagen = 784;
+//    int tamImagen = 1;
+//    vector< vector<double> > imagenesTrain2(cantImagenesTrain, vector<double>(tamImagen));
+//    vector< vector<double> > imagenesTest2(cantImagenesTest, vector<double>(tamImagen));
+//    vector< int > agenesTest2(cantImagenesTrain);
+//    vector< int > agenesTest3(cantImagenesTrain);
+//    vector< int > agenesTest4(cantImagenesTest);
+//    vector< int > agenesTest5(cantImagenesTest);
     Matriz imagenesTrain(cantImagenesTrain, tamImagen);
     Matriz imagenesTest(cantImagenesTest, tamImagen);
 
@@ -230,6 +238,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
       }
     }
 
+
     // imagenesTrain tiene en cada fila una imagen para la parte de train Y su correspondiente etiqueta (de 0 a 9)
     // imagenesTest tiene en cada fila una imagen para la parte de test Y su correspondiente etiqueta (de 0 a 9)
     // isTrain tiene para cada imagen (de 0 a cantImagenesTotales) si es parte del train o no
@@ -261,20 +270,16 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
       case 2: { // Método KNN+PLS-DA
 
-                if (z == 0) {
-
         Matriz& imagenesTrainReducida = PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
 
         // Hay que preguntar si se hace exactamente lo mismo con los dos o no.
-        Matriz& imagenesTestReducida = PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        Matriz& imagenesTestReducida = PLSDAMethod(imagenesTest, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
         
         // Para cada imagen en imagenesTests aplicarle la transformación característica (para reducir su dimensión)
 
         KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
           break;
 
-                }
-              
         }
 
     }

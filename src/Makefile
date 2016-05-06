@@ -1,6 +1,5 @@
 CC = g++
 CFLAGS = -std=c++11 -o
-EFLAGS = -g
 
 BINARIES = main matriz matrizsimetrica gauss descomposicionLU metodoPotencia PCA
 
