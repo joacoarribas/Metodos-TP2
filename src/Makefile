@@ -2,9 +2,9 @@ CC = g++
 CFLAGS = -std=c++11 -o
 EFLAGS = -g
 
-BINARIES = main matriz matrizsimetrica gauss descomposicionLU metodoPotencia
+BINARIES = main matriz matrizsimetrica gauss descomposicionLU metodoPotencia PCA
 
-.PHONY: main matriz matrizsimetrica gauss descomposicionLU
+.PHONY: main matriz matrizsimetrica gauss descomposicionLU PCA
 
 all: $(BINARIES)
 
@@ -19,6 +19,9 @@ metodoPotencia: metodoPotencia.cpp
 
 PLSDA:
 	$(CC) clases/PLSDA.cpp metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PLSDA
+
+PCA:
+	$(CC) pca.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PCA
 
 matriz: clases/Matriz.cpp
 	$(CC) clases/Matriz.cpp $(CFLAGS) matriz
