@@ -2,9 +2,9 @@ CC = g++
 CFLAGS = -std=c++11 -o
 EFLAGS = -g
 
-BINARIES = main matriz matrizsimetrica gauss descomposicionLU metodoPotencia
+BINARIES = main matriz matrizsimetrica gauss descomposicionLU metodoPotencia PCA
 
-.PHONY: main matriz matrizsimetrica gauss descomposicionLU
+.PHONY: main matriz matrizsimetrica gauss descomposicionLU PCA
 
 all: $(BINARIES)
 
