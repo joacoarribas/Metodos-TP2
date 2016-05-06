@@ -9,10 +9,10 @@ BINARIES = main matriz matrizsimetrica gauss descomposicionLU metodoPotencia
 all: $(BINARIES)
 
 main: main.cpp
-	$(CC) main.cpp clases/PLSDA.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) main
+	$(CC) main.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) main
 
 mainTest: mainTest.cpp
-	$(CC) mainTest.cpp clases/PLSDA.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) mainTest
+	$(CC) mainTest.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) mainTest
 
 metodoPotencia: metodoPotencia.cpp
 	$(CC) metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) metodoPotencia

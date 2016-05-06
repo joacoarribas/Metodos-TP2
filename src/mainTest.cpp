@@ -1,6 +1,5 @@
-//#include "clases/Matriz.h"
-#include "metodoPotencia.cpp"
-#include "clases/PLSDA.h"
+#include "clases/Matriz.h"
+#include "metodos/PLSDA.cpp"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -57,7 +56,7 @@ char dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecino
 
   // El vector y tiene en la i-esima posicion la norma |imagen - y[i]|_2
 
-  std::vector<int> labels(9, 0);
+  std::vector<int> labels(3, 0);
 
   while (vecinos > 0) {
     int i = indiceMinimo(y); // Me fijo cual es la imagen que minimiza la norma en cada iteracion
@@ -82,10 +81,10 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
     //std::cout << "etiqueta " << etiqueta <<std::endl;
     imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
 
- /*   
+   
     std::cout << "la etiqueta de la imagen " << i << " es " << imagenesTest.dameEtiqueta(i) << std::endl;
     std::cout << "su estimación fue: " << imagenesTest.dameEstimacion(i) << std::endl;
-
+/* 
     std::cout << "etiqueta: " << imagenesTest.dameEtiqueta(i) << std::endl;
     std::cout << "estimación: " << imagenesTest.dameEstimacion(i) << std::endl;
   */
@@ -124,14 +123,14 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   issData >> dimensiones;
   issData >> particiones;
 
-//  train = path.append("Test.csv"); 
-  train = path.append("train.csv"); 
+  train = path.append("Test.csv"); 
+//  train = path.append("train.csv"); 
   test = path.append("test.csv"); 
 
   std::ifstream fileTest (test.c_str()); // Hasta aca sólo instancie variables
 
   while (getline (fileData, lineData)) { // Pido las K lineas
-
+              
     std::ifstream fileTrain (train.c_str());
 
     std::istringstream issData(lineData);
@@ -163,7 +162,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
     // Ahora tengo el tamaño de la matrix para poder instanciarla
 
-    int tamImagen = 784;
+    int tamImagen = 6;
     Matriz imagenesTrain(cantImagenesTrain, tamImagen);
     Matriz imagenesTest(cantImagenesTest, tamImagen);
 
@@ -227,35 +226,34 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
           std::cout << "--------------------------" << std::endl;
           imagenesTrain.mostrar();
           KNN(imagenesTrain, imagenesTest, vecinos);
+
+          break;
               
         }
 
       case 1: { // Método KNN+PCA
 
               
+          break;
         }
 
       case 2: { // Método KNN+PLS-DA
 
                 if (z == 0) {
 
-        PLSDA * pls = new PLSDA();
-        Matriz& imagenesTrainReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        Matriz& imagenesTrainReducida = PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
 
         // Hay que preguntar si se hace exactamente lo mismo con los dos o no.
-        Matriz& imagenesTestReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        Matriz& imagenesTestReducida = PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
         
         // Para cada imagen en imagenesTests aplicarle la transformación característica (para reducir su dimensión)
 
         KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
+          break;
 
-        delete(pls);
                 }
-              
         }
-
     }
-
 
     ++z;
     std::cout << z << std::endl; // SOlo uso esto para ver cuantas iteraciones de lineas de archivo hizo

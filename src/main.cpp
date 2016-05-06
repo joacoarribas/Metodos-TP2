@@ -1,6 +1,5 @@
 #include "clases/Matriz.h"
-#include "clases/MatrizSimetrica.h"
-#include "clases/PLSDA.h"
+#include "metodos/PLSDA.cpp"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -10,11 +9,23 @@
 #include <queue>
 #include <sys/time.h>
 
-typedef std::priority_queue<int, std::vector<int>, std::greater<int> > min_heap; 
+timeval sstart, eend;
+double acum = 0;
+double acum2 = 0;
 
-double dameNorma(std::vector<double> x) {
+void init_time() {
+  gettimeofday(&sstart, NULL);
+}
+
+double get_time() {
+  gettimeofday(&eend, NULL);
+  return (1000000*(eend.tv_sec-sstart.tv_sec) + (eend.tv_usec-sstart.tv_usec))/1000000.0;
+}
+
+double dameNorma(std::vector<double>& x) {
   double norm = 0;
-  for (size_t i = 0; i < 784; ++i)
+  int length = x.size();
+  for (int i = 0; i < length; ++i)
     norm += x[i] * x[i];
     
   return sqrt(norm);
@@ -38,7 +49,7 @@ int indiceMaximo(std::vector<int>& x) {
   return posMax;
 }
     
-char dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos) {
+int dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos) {
 
   int filas = imagenesTrain.dimensionFilas();
   int columnas = imagenesTrain.dimensionColumnas();
@@ -46,22 +57,23 @@ char dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecino
   std::vector<double> x(columnas);
   std::vector<double> y(filas);
 
-  for (size_t i = 0; i < filas; ++i) {
+  for (int i = 0; i < filas; ++i) {
 
-    for (size_t j = 0; j < columnas; ++j) 
-      x[i] = imagen[j] - imagenesTrain[i][j];
+    for (int j = 0; j < columnas; ++j) 
+      x[j] = imagen[j] - imagenesTrain[i][j];
 
     y[i] = dameNorma(x);
+//    std::cout << "norma: " << y[i] << std::endl;
       // quiero sacar ccantidad de vecinos etiquetas (de 0 a 9). Sacar el maximo de ahí.
   }
 
   // El vector y tiene en la i-esima posicion la norma |imagen - y[i]|_2
 
-  std::vector<int> labels(9, 0);
+  std::vector<int> labels(10, 0);
 
   while (vecinos > 0) {
     int i = indiceMinimo(y); // Me fijo cual es la imagen que minimiza la norma en cada iteracion
-    char etiqueta = imagenesTrain.dameEtiqueta(i); // Me fijo cual es la etiqueta de dicho minimo
+    int etiqueta = imagenesTrain.dameEtiqueta(i); // Me fijo cual es la etiqueta de dicho minimo
     labels[etiqueta]++;
 
     vecinos--;
@@ -76,20 +88,32 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
   int filas = imagenesTest.dimensionFilas();
   int cantidadDeAciertos = 0;
   
-  for (size_t i = 0; i < filas; ++i) {
+  for (int i = 0; i < filas; ++i) {
 
-    char etiqueta = dameEtiqueta(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
+    int etiqueta = dameEtiqueta(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
+    //std::cout << "etiqueta " << etiqueta <<std::endl;
     imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
 
+ /*   
+    std::cout << "la etiqueta de la imagen " << i << " es " << imagenesTest.dameEtiqueta(i) << std::endl;
+    std::cout << "su estimación fue: " << imagenesTest.dameEstimacion(i) << std::endl;
+
+    std::cout << "etiqueta: " << imagenesTest.dameEtiqueta(i) << std::endl;
+    std::cout << "estimación: " << imagenesTest.dameEstimacion(i) << std::endl;
+  */
     if (etiqueta == imagenesTest.dameEtiqueta(i))
       cantidadDeAciertos++;
   }
+
+  //std::cout << "cantidad de aciertos " << cantidadDeAciertos << std::endl;
 
   return cantidadDeAciertos; // Esto no sé si es necesario aún
 
 }
 
 int evaluarTests(std::string fileTestData, std::string fileTestResult, int method) {
+
+  init_time();
   std::string lineData;
   std::string lineTest;
   std::string lineTrain;
@@ -114,20 +138,23 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   issData >> dimensiones;
   issData >> particiones;
 
-  train = path.append("train.csv"); 
+//  train = path.append("Test.csv"); 
+//  train = path.append("train2.csv"); 
+  train = path.append("train3.csv"); 
   test = path.append("test.csv"); 
 
-  std::ifstream fileTrain (train.c_str());
   std::ifstream fileTest (test.c_str()); // Hasta aca sólo instancie variables
 
   while (getline (fileData, lineData)) { // Pido las K lineas
+
+    std::ifstream fileTrain (train.c_str());
 
     std::istringstream issData(lineData);
 
     std::map<int, bool> isTrain;
     std::map<int, bool>::iterator itTrain = isTrain.begin();
   
-    char train;
+    bool train;
     int cantImagenesTrain = 0;
     int cantImagenesTest = 0;
     int cantImagenesTotales = 0;
@@ -167,32 +194,36 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
       if (isTrain[k]) {
 
-        char etiqueta;
-        issTrain >> etiqueta;
-        imagenesTrain.etiquetar(h, etiqueta);
-
-        double pixel;
         int j = 0;
+        int a = 0;
+        std::string s;
 
-        while (issTrain >> pixel) {
-          imagenesTrain[h][j] = pixel;
-          ++j;
+        while (getline(issTrain, s, ',')) {
+          if (j == 0) {
+            imagenesTrain.etiquetar(h, atoi(s.c_str()));
+            ++j;
+          } else {
+            imagenesTrain[h][a] = std::stod(s);
+            ++a;
+          }
         }
 
         ++h;
 
       } else {
 
-        char etiqueta;
-        issTrain >> etiqueta;
-        imagenesTest.etiquetar(r, etiqueta);
-
-        double pixel;
         int j = 0;
+        int a = 0;
+        std::string s;
 
-        while (issTrain >> pixel) {
-          imagenesTest[r][j] = pixel;
-          ++j;
+        while (getline(issTrain, s, ',')) {
+          if (j == 0) {
+            imagenesTest.etiquetar(r, atoi(s.c_str()));
+            ++j;
+          } else {
+            imagenesTest[r][a] = std::stod(s);
+            ++a;
+          }
         }
 
         ++r;
@@ -206,37 +237,55 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
     switch(method) {
       case 0: { // Método KNN
 
+                
+//          imagenesTest.mostrar();
+          std::cout << "--------------------------" << std::endl;
+//          std::cout << imagenesTrain.dimensionFilas() << std::endl;
+//          std::cout << imagenesTrain.dimensionColumnas() << std::endl;
+//          std::cout << imagenesTest.dimensionFilas() << std::endl;
+//          std::cout << imagenesTest.dimensionColumnas() << std::endl;
+
+
+//          imagenesTrain.mostrar();
           KNN(imagenesTrain, imagenesTest, vecinos);
+
+          break;
               
         }
 
       case 1: { // Método KNN+PCA
 
               
+          break;
         }
 
       case 2: { // Método KNN+PLS-DA
-        PLSDA * pls = new PLSDA();
-        Matriz& imagenesTrainReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+
+                if (z == 0) {
+
+        Matriz& imagenesTrainReducida = PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
 
         // Hay que preguntar si se hace exactamente lo mismo con los dos o no.
-        PLSDA * pls = new PLSDA();
-        Matriz& imagenesTestReducida = pls->PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        Matriz& imagenesTestReducida = PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
         
         // Para cada imagen en imagenesTests aplicarle la transformación característica (para reducir su dimensión)
 
         KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
+          break;
 
-        delete(pls);
-      }
+                }
+              
+        }
 
     }
-
 
     ++z;
     std::cout << z << std::endl; // SOlo uso esto para ver cuantas iteraciones de lineas de archivo hizo
 
   }
+
+  acum += get_time();
+  std::cout << std::fixed << acum << std::endl;
 
   return 0;
 }

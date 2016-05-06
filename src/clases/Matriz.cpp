@@ -5,7 +5,7 @@ Matriz::Matriz(int filas, int columnas) {
   this->columnas = columnas;
   vector< vector<double> > m(filas, vector<double>(columnas));
   this->matriz = m;
-  vector<int> v(filas, -1);
+  vector<int> v(filas, 0);
   this->etiquetas = v;
   this->estimaciones = v;
 
@@ -173,7 +173,6 @@ void Matriz::mostrar() {
   }
 }
 
-
 void Matriz::cargarVector(std::vector<double> &x) {
   //para cargar el vector
   srand (time(NULL));
@@ -183,7 +182,7 @@ void Matriz::cargarVector(std::vector<double> &x) {
   }
 }
 
-Matriz& Matriz::multiplicarVectoresDameMatriz(std::vector<double> a, std::vector<double> b) {
+Matriz& Matriz::multiplicarVectoresDameMatriz(std::vector<double>& a, std::vector<double>& b) {
   Matriz * result = new Matriz(a.size(), a.size());
 
   for (int i=0; i<a.size() ; ++i) {
@@ -195,7 +194,7 @@ Matriz& Matriz::multiplicarVectoresDameMatriz(std::vector<double> a, std::vector
   return *result;
 }
 
-double Matriz::multiplicarVectoresDameValor(std::vector<double> a, std::vector<double> b) {
+double Matriz::multiplicarVectoresDameValor(std::vector<double>& a, std::vector<double>& b) {
   double result = 0;
 
   for (int i=0; i<a.size(); ++i) {
