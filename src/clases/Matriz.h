@@ -16,25 +16,28 @@ class Matriz {
   public:
 
     Matriz(int filas, int columnas);
+    ~Matriz();
 
-    Matriz& operator * (int i);
-    Matriz& operator * (Matriz& m);
-    Matriz& operator * (MatrizSimetrica& m);
-    vector<double>& operator * (vector<double>& m);
+    void multiplicarEscalar(int i); // Esta no se usa por ahora
 
-    Matriz& operator + (Matriz& m);
-    Matriz& operator - (Matriz& m);
+    void multiplicarMatrices(Matriz& a, Matriz& b);
+    void multiplicarVectorDer(vector<double>& x, vector<double>& y);
+    void multiplicarVectorIzq(vector<double>& x, vector<double>& y);
+    void multiplicarVectoresDameMatriz(std::vector<double>& a, std::vector<double>& b);
+
+    void mas(Matriz& m);
+    void menos(Matriz& m);
 
     vector<double>& operator [] (int fila);
 
     static double multiplicarVectoresDameValor(std::vector<double>& a, std::vector<double>& b);
-    static Matriz& multiplicarVectoresDameMatriz(std::vector<double>& a, std::vector<double>& b);
     static void cargarVector(std::vector<double>& x);
+    static void cerearVector(std::vector<double>& x);
 
     void etiquetar(int i, int etiqueta);
     void estimar(int i, int etiqueta);
     void mostrar();
-    Matriz& transponer();
+    void trasponer(Matriz& traspuesta);
     void randomizar(int semilla);
 
     int dameEtiqueta(int i);

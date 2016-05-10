@@ -7,14 +7,11 @@
 void calcular_media(Matriz& matriz, vector<double>& v) { //ver si se pierde precisión con la división
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
-      if(j == m - 1){
-        v[i] = (v[i] + matriz[i][j]) / (float)m; //calculo promedio final
-      } else {
-        v[i] = (v[i] + matriz[i][j]); //acumulo
-      } 
+  for (int j = 0; j < m; ++j) {
+    for (int i = 0; i < n; ++i) {
+      v[j] = (v[j] + matriz[i][j]); //acumulo
     }
+    v[j] = v[j] / (double)m; //calculo promedio final
   }
 }
 

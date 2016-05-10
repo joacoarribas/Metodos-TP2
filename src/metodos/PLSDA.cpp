@@ -17,7 +17,8 @@ void normalizar(std::vector<double>& x) {
 }
 
 
-Matriz& transformacionCaracteristica(Matriz& m, std::vector< std::vector<double> >& w, int n, int dimensiones) {
+//Matriz& transformacionCaracteristica(Matriz& m, std::vector< std::vector<double> >& w, int n, int dimensiones) {
+Matriz& transformacionCaracteristica(Matriz& m, Matriz& w, int n, int dimensiones) {
 	Matriz * resultado = new Matriz(n, dimensiones); // la nueva matriz usa el parametro de dimensiones
 
 	for (int i=0; i<n; ++i) {
@@ -70,29 +71,36 @@ Matriz& PLSDAMethod(Matriz& valores, int dimensiones) {
   }
 
 	//defino promY de nX1 con promY_i = promedio de la fila i-esima de preY
-	double promY[n];
+	//double promY[n];
+  std::vector<double> promY(n, 0);
 	for (int i=0; i<n; ++i) {
 		for (int j=0; j<10; ++j) {
 			promY[i] += valores[i][j];
 		}
-		promY[i] /= 10; //esto puede traer error
+		//promY[i] /= 10.0; //esto puede traer error
+		promY[i] /= 10.0; //esto puede traer error
 	}
 
+	//Matriz Y(n, 10);
 	//defino Y como preY_i − promY_i / raiz(n-1)
 	for (int i=0; i<n; ++i) {
-		for (int j=0; j<m; ++j) {
+		//for (int j=0; j<m; ++j) {
+		for (int j=0; j<10; ++j) {
 			Y[i][j] = (preY[i][j] - promY[i]) / raizN;
 		}
 	}
 
 	//genero las transformaciones w_i como :
-	std::vector< std::vector<double> > w(n, std::vector<double>(n));
-	for (int i = 0; i < n; ++i) {
-	    std::vector<double> wi(n);
-	    w[i] = wi;
-	}
+  std::cout << n << std::endl;
+  Matriz w(n, n);
+	//std::vector< std::vector<double> > w(n, std::vector<double>(n));
+	//for (int i = 0; i < n; ++i) {
+	//    std::vector<double> wi(n);
+	//    w[i] = wi;
+	//}
 
 	for(int i=0; i<dimensiones; ++i) {
+
 		Matriz Xtrans = X.transponer();
 		Matriz Ytrans = Y.transponer();
 		Matriz Mi     = (Xtrans * Y) * (Ytrans * X);

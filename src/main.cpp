@@ -1,5 +1,6 @@
 #include "clases/Matriz.h"
-#include "metodos/PLSDA.cpp"
+//#include "metodos/PLSDA.cpp"
+#include "metodos/PLSDATest.cpp"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -104,7 +105,7 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
       cantidadDeAciertos++;
   }
 
-  //std::cout << "cantidad de aciertos " << cantidadDeAciertos << std::endl;
+  std::cout << "cantidad de aciertos " << cantidadDeAciertos << std::endl;
 
   return cantidadDeAciertos; // Esto no sé si es necesario aún
 
@@ -138,8 +139,8 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   issData >> particiones;
 
 //  train = path.append("Test.csv"); 
-  train = path.append("train.csv"); 
-//  train = path.append("train2.csv"); 
+//  train = path.append("train.csv"); 
+  train = path.append("train2.csv"); 
 //  train = path.append("train3.csv"); 
   test = path.append("test.csv"); 
 
@@ -249,6 +250,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
                 
 //          imagenesTest.mostrar();
           std::cout << "--------------------------" << std::endl;
+          std::cout << "--------------------------" << std::endl;
 //          std::cout << imagenesTrain.dimensionFilas() << std::endl;
 //          std::cout << imagenesTrain.dimensionColumnas() << std::endl;
 //          std::cout << imagenesTest.dimensionFilas() << std::endl;
@@ -270,15 +272,15 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
       case 2: { // Método KNN+PLS-DA
 
-        Matriz& imagenesTrainReducida = PLSDAMethod(imagenesTrain, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+        Matriz imagenesTrainReducida(imagenesTrain.dimensionFilas(), dimensiones);
+        PLSDAMethod(imagenesTrain, imagenesTrainReducida, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
 
         // Hay que preguntar si se hace exactamente lo mismo con los dos o no.
-        Matriz& imagenesTestReducida = PLSDAMethod(imagenesTest, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
-        
-        // Para cada imagen en imagenesTests aplicarle la transformación característica (para reducir su dimensión)
+        Matriz imagenesTestReducida(imagenesTest.dimensionFilas(), dimensiones);
+        PLSDAMethod(imagenesTest, imagenesTestReducida, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
 
         KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
-          break;
+        break;
 
         }
 

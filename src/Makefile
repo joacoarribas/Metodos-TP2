@@ -13,11 +13,11 @@ main: main.cpp
 mainTest: mainTest.cpp
 	$(CC) mainTest.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) mainTest
 
-metodoPotencia: metodoPotencia.cpp
-	$(CC) metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) metodoPotencia
+metodoPotencia:
+	$(CC) metodos/metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) metodoPotencia
 
 PLSDA:
-	$(CC) clases/PLSDA.cpp metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PLSDA
+	$(CC) metodos/PLSDA.cpp metodos/metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PLSDA
 
 PCA:
 	$(CC) pca.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PCA

@@ -13,6 +13,8 @@ Matriz::Matriz(int filas, int columnas) {
 
 }
 
+Matriz::~Matriz() {}
+
 int Matriz::dameEtiqueta(int i) {
   return this->etiquetas[i];
 }
@@ -37,104 +39,77 @@ void Matriz::estimar(int i, int etiqueta){
   this->estimaciones[i] = etiqueta;
 }
 
-Matriz& Matriz::transponer() {
-  Matriz * nueva = new Matriz(this->columnas, this->filas);
+void Matriz::trasponer(Matriz& traspuesta) {
+  assert(this->filas == traspuesta.dimensionColumnas() && this->columnas == traspuesta.dimensionFilas());
+
   for (int f = 0; f < this->filas; ++f) {
-    for (int c = f+1; c < columnas; ++c) {
-      nueva->matriz[f][c] = this->matriz[c][f];
-      nueva->matriz[c][f] = this->matriz[f][c];
+    for (int c = 0; c < this->columnas; ++c) {
+      traspuesta[c][f] = this->matriz[f][c];
     }
   }
 
-  return *nueva;
 }
 
 	/*******************************
 	 *          Operadores         *
 	 *******************************/ 
 
-Matriz& Matriz::operator * (int i) {
-  for (int f = 0; f < this->filas; ++f) {
-    for (int c = 0; c < this->columnas; ++c) {
-      matriz [f][c] *= i;
-    }
-  }
+void Matriz::multiplicarEscalar(int i) {
+
+  for (int f = 0; f < this->filas; ++f)
+    for (int c = 0; c < this->columnas; ++c)
+      this->matriz[f][c] *= i;
   
-  return *this;
 }
 
-vector<double>& Matriz::operator * (vector<double>& v) {
-  assert(this->columnas == v.size());
+void Matriz::multiplicarVectorDer(vector<double>& x, vector<double>& y) {
+  assert(this->columnas == x.size());
+  assert(this->filas == y.size());
 
-  vector<double> * nuevo = new vector<double>(v.size());
+  for (int f = 0; f < this->filas; ++f)
+    for (int k = 0; k < this->columnas; ++k)
+      y[f] += this->matriz[f][k] * x[k];
 
-  for (int f = 0; f < this->filas; ++f) {
-    for (int k = 0; k < this->columnas; ++k) {
-      (*nuevo)[f] += this->matriz[f][k] * v[k];
-    }
-  }
-
-  return *nuevo;
 }
 
-Matriz& Matriz::operator * (Matriz& m) {
-  assert(this->columnas == m.dimensionFilas());
+void Matriz::multiplicarVectorIzq(vector<double>& x, vector<double>& y) {
+  assert(this->columnas == y.size());
+  assert(this->filas == x.size());
 
-  Matriz * nueva = new Matriz(this->columnas, m.dimensionFilas());
+  for (int k = 0; k < this->columnas; ++k)
+    for (int f = 0; f < this->filas; ++f)
+      y[k] += this->matriz[f][k] * x[f];
 
-  for (int f = 0; f < this->filas; ++f) {
-    for (int c = 0; c < this->columnas; ++c) {
-      for (int k = 0; k < this->columnas; ++k) {
-        nueva->matriz[f][c] += this->matriz[f][k] * m.matriz[k][c];
-      }
-    }
-  }
-
-  return *nueva;
 }
 
-Matriz& Matriz::operator * (MatrizSimetrica& m) {
-  assert(this->columnas == m.dimensionFilas());
+void Matriz::multiplicarMatrices(Matriz& a, Matriz& b) {
+  assert(this->columnas == a.dimensionFilas());
+  assert(b.dimensionFilas() == this->filas && b.dimensionColumnas() == a.dimensionColumnas());
 
-  Matriz * nueva = new Matriz(this->columnas, m.dimensionFilas());
-
-  for (int f = 0; f < this->filas; ++f) {
-    for (int c = 0; c < this->columnas; ++c) {
-      for (int k = 0; k < this->columnas; ++k) {
-        nueva->matriz[f][c] += this->matriz[f][k] * m.get(k,c);
-      }
-    }
-  }
-
-  return *nueva;
+  int col = a.dimensionColumnas();
+  for (int f = 0; f < this->filas; ++f)
+    for (int c = 0; c < col; ++c)
+      for (int k = 0; k < this->columnas; ++k)
+        b[f][c] += this->matriz[f][k] * a.matriz[k][c];
+      
 }
 
-Matriz& Matriz::operator + (Matriz& m) {
-  if (m.dimensionFilas() == this->filas && m.dimensionColumnas() == this->columnas) {
+void Matriz::menos(Matriz& m) {
+  assert (m.dimensionFilas() == this->filas && m.dimensionColumnas() == this->columnas);
   
-    for (int f = 0; f < this->filas; ++f) {
-      for (int c = 0; c < this->columnas; ++c) {
-        this->matriz[f][c] = this->matriz[f][c] + m.matriz[f][c];
-      }
-    }
-  
-  }
-  
-  return *this;
-}
-
-Matriz& Matriz::operator - (Matriz& m) {
-  if (m.dimensionFilas() == this->filas && m.dimensionColumnas() == this->columnas) {
-  
-    for (int f = 0; f < this->filas; ++f) {
-      for (int c = 0; c < this->columnas; ++c) {
+    for (int f = 0; f < this->filas; ++f)
+      for (int c = 0; c < this->columnas; ++c)
         this->matriz[f][c] = this->matriz[f][c] - m.matriz[f][c];
-      }
-    }
   
-  }
+}
+
+void Matriz::mas(Matriz& m) {
+  assert (m.dimensionFilas() == this->filas && m.dimensionColumnas() == this->columnas);
   
-  return *this;
+    for (int f = 0; f < this->filas; ++f)
+      for (int c = 0; c < this->columnas; ++c)
+        this->matriz[f][c] = this->matriz[f][c] + m.matriz[f][c];
+  
 }
 
 vector<double>& Matriz::operator [] (int fila) {
@@ -179,22 +154,32 @@ void Matriz::cargarVector(std::vector<double> &x) {
   }
 }
 
-Matriz& Matriz::multiplicarVectoresDameMatriz(std::vector<double>& a, std::vector<double>& b) {
-  Matriz * result = new Matriz(a.size(), a.size());
+void Matriz::cerearVector(std::vector<double> &x) {
+  int n = x.size();
 
-  for (int i=0; i<a.size() ; ++i) {
-    for (int j=0; j<a.size() ; ++j) {
-      (*result)[i][j] = a[i] * b[j];
-    }
-  }
+  for (int i = 0; i < n; ++i)
+    x[i] = 0;
 
-  return *result;
+}
+
+void Matriz::multiplicarVectoresDameMatriz(std::vector<double>& a, std::vector<double>& b) {
+  assert(this->filas == a.size() && this->columnas == b.size());
+  int columnas = b.size();
+  int filas = a.size();
+
+  for (int i=0; i < filas ; ++i)
+    for (int j=0; j < columnas ; ++j)
+      this->matriz[i][j] = a[i] * b[j];
+
 }
 
 double Matriz::multiplicarVectoresDameValor(std::vector<double>& a, std::vector<double>& b) {
-  double result = 0;
+  assert(a.size() == b.size());
 
-  for (int i=0; i<a.size(); ++i) {
+  double result = 0;
+  int length = a.size();
+
+  for (int i = 0; i < length; ++i) {
     result += a[i] * b[i];
   }
 
@@ -212,3 +197,21 @@ void Matriz::clean() {
     }
   }
 }
+  /*
+  std::cout << "Matriz this:" << std::endl;
+  std::cout << "filas: " << this->filas << std::endl;
+  std::cout << "columnas: " << this->columnas << std::endl;
+
+  std::cout << "_------------------------" << std::endl;
+
+  std::cout << "Matriz parametro:" << std::endl;
+  std::cout << "filas: " << a.dimensionFilas() << std::endl;
+  std::cout << "columnas: " << a.dimensionColumnas() << std::endl;
+
+  std::cout << "_------------------------" << std::endl;
+
+  std::cout << "Matriz nueva:" << std::endl;
+  std::cout << "filas: " << b.dimensionFilas() << std::endl;
+  std::cout << "columnas: " << b.dimensionColumnas() << std::endl;
+*/
+
