@@ -105,6 +105,7 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
       cantidadDeAciertos++;
   }
 
+  std::cout << "cantidad de imagenes Test" << imagenesTest.dimensionFilas() << std::endl;
   std::cout << "cantidad de aciertos " << cantidadDeAciertos << std::endl;
 
   return cantidadDeAciertos; // Esto no sé si es necesario aún
@@ -139,8 +140,8 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   issData >> particiones;
 
 //  train = path.append("Test.csv"); 
-//  train = path.append("train.csv"); 
-  train = path.append("train2.csv"); 
+  train = path.append("train.csv"); 
+//  train = path.append("train2.csv"); 
 //  train = path.append("train3.csv"); 
   test = path.append("test.csv"); 
 
@@ -189,7 +190,10 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 //    vector< int > agenesTest4(cantImagenesTest);
 //    vector< int > agenesTest5(cantImagenesTest);
     Matriz imagenesTrain(cantImagenesTrain, tamImagen);
+    Matriz imagenesTrainReducida(imagenesTrain.dimensionFilas(), dimensiones);
+
     Matriz imagenesTest(cantImagenesTest, tamImagen);
+    Matriz imagenesTestReducida(imagenesTest.dimensionFilas(), dimensiones);
 
     int h = 0; // Marca el índice de imagenesTrain
     int r = 0; // Marca el índice de imagenesTest
@@ -210,6 +214,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
         while (getline(issTrain, s, ',')) {
           if (j == 0) {
             imagenesTrain.etiquetar(h, atoi(s.c_str()));
+            imagenesTrainReducida.etiquetar(h, atoi(s.c_str()));
             ++j;
           } else {
             imagenesTrain[h][a] = std::stod(s);
@@ -228,6 +233,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
         while (getline(issTrain, s, ',')) {
           if (j == 0) {
             imagenesTest.etiquetar(r, atoi(s.c_str()));
+            imagenesTestReducida.etiquetar(r, atoi(s.c_str()));
             ++j;
           } else {
             imagenesTest[r][a] = std::stod(s);
@@ -272,11 +278,9 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
       case 2: { // Método KNN+PLS-DA
 
-        Matriz imagenesTrainReducida(imagenesTrain.dimensionFilas(), dimensiones);
         PLSDAMethod(imagenesTrain, imagenesTrainReducida, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
 
         // Hay que preguntar si se hace exactamente lo mismo con los dos o no.
-        Matriz imagenesTestReducida(imagenesTest.dimensionFilas(), dimensiones);
         PLSDAMethod(imagenesTest, imagenesTestReducida, dimensiones); //Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
 
         KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
