@@ -20,13 +20,13 @@ class Matriz {
 
     void multiplicarEscalar(int i); // Esta no se usa por ahora
 
-    void multiplicarMatrices(Matriz& a, Matriz& b);
+    void multiplicarMatrices(Matriz& a, Matriz& b); // b = this * a
     void multiplicarVectorDer(vector<double>& x, vector<double>& y);
     void multiplicarVectorIzq(vector<double>& x, vector<double>& y);
     void multiplicarVectoresDameMatriz(std::vector<double>& a, std::vector<double>& b);
 
     void mas(Matriz& m);
-    void menos(Matriz& m);
+    void menos(Matriz& m); // this = this - m
 
     vector<double>& operator [] (int fila);
 

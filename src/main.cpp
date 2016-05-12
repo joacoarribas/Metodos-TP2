@@ -1,6 +1,7 @@
 #include "clases/Matriz.h"
 //#include "metodos/PLSDA.cpp"
 #include "metodos/PLSDATest.cpp"
+#include "metodos/pca.cpp"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -268,13 +269,17 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
           break;
               
-        }
+      }
 
       case 1: { // Método KNN+PCA
-
+      
+       //componentes
+       PCA(imagenesTrain, imagenesTrainReducida, componentes);
+       PCA(imagenesTest, imagenesTestReducida, componentes); 
+       KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
               
-          break;
-        }
+        break;
+      }
 
       case 2: { // Método KNN+PLS-DA
 
@@ -286,7 +291,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
         KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
         break;
 
-        }
+      }
 
     }
 

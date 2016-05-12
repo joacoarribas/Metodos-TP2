@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "metodos/metodoPotencia.cpp"
+#include "metodoPotencia.cpp"
 
 void calcular_media(Matriz& matriz, vector<double>& v) { //ver si se pierde precisión con la división
   int n = matriz.dimensionFilas();
@@ -11,64 +11,77 @@ void calcular_media(Matriz& matriz, vector<double>& v) { //ver si se pierde prec
     for (int i = 0; i < n; ++i) {
       v[j] = (v[j] + matriz[i][j]); //acumulo
     }
-    v[j] = v[j] / (double)m; //calculo promedio final
+    v[j] = v[j] / (double)n; //calculo promedio final
   }
+  std::cout << "8" << std::endl;
 }
 
-Matriz& calcular_matriz_covarianza(Matriz& matriz){
+void calcular_matriz_covarianza(Matriz& matriz, Matriz& res){
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
-  Matriz *res = new Matriz(n, n);
 
-  vector<double> media(n);
+  vector<double> media(m);
+  
   calcular_media(matriz, media);
+  
+  std::cout << "2" << std::endl;
   double divisor = sqrt ((double)n - 1.0);
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
-      (*res)[i][j] = (matriz[i][j] - media[i]) / divisor; //escribo resultado en la matriz
+
+  for (int j = 0; j < m; ++j) {
+    for (int i = 0; i < n; ++i) {
+      res[i][j] = (matriz[i][j] - media[i]) / divisor; //escribo resultado en la matriz
     }
+  std::cout << "3" << std::endl;
   }
-  return *res;
 }
 
 void calcular_base_ortonormal(Matriz& m, Matriz& matriz_ortonormal, int alfa){ //deja en matriz_ortonormal una matriz de alfa columnas
   double autovalor;
-  vector<double> aux(matriz_ortonormal.dimensionColumnas());  
+  int n = matriz_ortonormal.dimensionFilas();
+  vector<double> aux(n);  
 
   for (int i = 0; i < alfa; ++i) { //repito alfa veces (hay que experimentar con dicho valor)
     Matriz::cargarVector(aux);
     autovalor = metodoPotencia(m, aux); //calculo el i-ésimo autovalor, en aux queda el autovector
-    for (int k = 0; k < matriz_ortonormal.dimensionColumnas(); ++k){
+  std::cout << "5" << std::endl;
+    for (int k = 0; k < n; ++k){
       matriz_ortonormal[i][k] = aux[k]; //completo matriz con base ortonormal
+  std::cout << "6" << std::endl;
     }
     /* Deflación */
-    Matriz auxiliar = Matriz::multiplicarVectoresDameMatriz(aux, aux);
-    m - (auxiliar * autovalor);
+    Matriz auxiliar(n, n);
+    auxiliar.multiplicarVectoresDameMatriz(aux, aux);
+    auxiliar.multiplicarEscalar(autovalor);
+    m.menos(auxiliar);
   } 
   /* Tengo en matriz_ortonormal la matriz con base de autovectores de matriz */
 }
 
-Matriz& PCA(Matriz& matriz){
+void PCA(Matriz& matriz, Matriz& res, int alfa){
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
 
-  Matriz matriz_covarianza = calcular_matriz_covarianza(matriz);
+  Matriz X(n, m);
+  std::cout << "1" << std::endl;
+  calcular_matriz_covarianza(matriz, X);
+  std::cout << "4" << std::endl;
 
-  int alfa = 10; //alfa valor arbitrario
-  Matriz *matriz_ortonormal = new Matriz(n, alfa); //revisar dimensiones
+  Matriz matriz_ortonormal(alfa, m); //revisar dimensiones
   /* Reducción de la dimensión */
-  calcular_base_ortonormal(matriz, *matriz_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa columnas
+  calcular_base_ortonormal(matriz, matriz_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa columnas
+  std::cout << "7" << std::endl;
   /* Transformación característica */
-  Matriz matriz_ortonormal_traspuesta = matriz_ortonormal->transponer();
+  Matriz matriz_ortonormal_traspuesta(alfa, n);
+  std::cout << "8" << std::endl;
+  matriz_ortonormal.trasponer(matriz_ortonormal_traspuesta);
+  std::cout << "9" << std::endl;
 
-  Matriz *res = new Matriz(alfa, n); //revisar dimensiones
-  *res = matriz_ortonormal_traspuesta * matriz;
-  return *res;
+  /* Transformación característica */
+  res.multiplicarMatrices(matriz_ortonormal_traspuesta, matriz); 
+  std::cout << "10" << std::endl;
+
 }
 
-int main(){
-  return 0;
-}
 
 //void calcular_matriz(Matriz& matriz) { NO ME BORREN ESTO POR AHORA PORFIS
 //  int n = matriz.dimensionFilas();

@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#include "metodoPotencia.cpp"
+//#include "metodoPotencia.cpp"
 
 void normalizar(std::vector<double>& x) {
 	double norma2 = 0;
@@ -101,7 +101,7 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
 		//calcular wi el autovector asociado al mayor autovalo de Mi
 		std::vector<double>& wi = w[i]; // Si w = nxm entonces wi = m
 		Matriz::cargarVector(wi);
-    metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
+    //metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
 
 		//normalizar wi con norma 2
 		normalizar(wi);

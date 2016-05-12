@@ -20,7 +20,7 @@ PLSDA:
 	$(CC) metodos/PLSDA.cpp metodos/metodoPotencia.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PLSDA
 
 PCA:
-	$(CC) pca.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PCA
+	$(CC) metodos/pca.cpp clases/Matriz.cpp clases/MatrizSimetrica.cpp $(CFLAGS) PCA
 
 matriz: clases/Matriz.cpp
 	$(CC) clases/Matriz.cpp $(CFLAGS) matriz
