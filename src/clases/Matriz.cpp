@@ -150,7 +150,7 @@ void Matriz::cargarVector(std::vector<double> &x) {
   srand (time(NULL));
 
   for (int i=0; i<x.size(); ++i) {
-    x[i] = rand() % 10;
+    x[i] = (rand() % 10) + 1;
   }
 }
 
