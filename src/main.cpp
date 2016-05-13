@@ -191,10 +191,10 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 //    vector< int > agenesTest4(cantImagenesTest);
 //    vector< int > agenesTest5(cantImagenesTest);
     Matriz imagenesTrain(cantImagenesTrain, tamImagen);
-    Matriz imagenesTrainReducida(imagenesTrain.dimensionFilas(), dimensiones);
+    Matriz imagenesTrainReducida(imagenesTrain.dimensionFilas(), componentes);
 
     Matriz imagenesTest(cantImagenesTest, tamImagen);
-    Matriz imagenesTestReducida(imagenesTest.dimensionFilas(), dimensiones);
+    Matriz imagenesTestReducida(imagenesTest.dimensionFilas(), componentes);
 
     int h = 0; // Marca el índice de imagenesTrain
     int r = 0; // Marca el índice de imagenesTest
