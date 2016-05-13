@@ -141,8 +141,8 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   issData >> particiones;
 
 //  train = path.append("Test.csv"); 
-//  train = path.append("train.csv"); 
-  train = path.append("train2.csv"); 
+  train = path.append("train.csv"); 
+//  train = path.append("train2.csv"); 
 //  train = path.append("train3.csv"); 
   test = path.append("test.csv"); 
 
@@ -274,14 +274,10 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
       case 1: { // Método KNN+PCA
       
        //componentes
-                std::cout << "por entrar a PCA" << std::endl;
        PCA(imagenesTrain, imagenesTrainReducida, componentes);
-       std::cout << "sali de pca train" << std::endl;
        PCA(imagenesTest, imagenesTestReducida, componentes); 
-       std::cout << "sali de pca train" << std::endl;
        
        KNN(imagenesTrainReducida, imagenesTestReducida, vecinos);
-       std::cout << "sali de knn" << std::endl;
               
        break;
       }
@@ -302,6 +298,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
     ++z;
     std::cout << z << std::endl; // SOlo uso esto para ver cuantas iteraciones de lineas de archivo hizo
+    std::cout << "-----------------------------------------" << std::endl; // SOlo uso esto para ver cuantas iteraciones de lineas de archivo hizo
 
   }
 
