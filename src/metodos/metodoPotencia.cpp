@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "../clases/Matriz.h"
 
-#define EPSILON 1.19e-7f
+#define EPSILON 1.19e-6f
 
 bool igualdadConTolerancia(double a, double b) {
   if (std::abs(a - b) < EPSILON) {
@@ -16,7 +16,7 @@ double maxAbs(vector<double>& x) {
   double max = std::abs(x[0]);
   int length = x.size();
 
-  for (size_t i = 0; i < length; ++i) {
+  for (size_t i = 1; i < length; ++i) {
     if (std::abs(x[i]) > max)
       max = std::abs(x[i]);
   }
@@ -44,6 +44,8 @@ double metodoPotencia(Matriz& A, vector<double>& x) {
     Matriz::cerearVector(y); // Reseteo el vector y
 
     A.multiplicarVectorDer(x, y);
+
+    Matriz::cerearVector(x); // Reseteo el vector y
 
     c2 = maxAbs(y);
     aux = c2;
