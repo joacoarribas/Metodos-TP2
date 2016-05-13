@@ -9,6 +9,7 @@
 #include <map>
 #include <queue>
 #include <sys/time.h>
+#include <limits>
 
 timeval sstart, eend;
 double acum = 0;
@@ -33,6 +34,8 @@ double dameNorma(std::vector<double>& x) {
 }
 
 int indiceMinimo(std::vector<double>& x) {
+
+  /*
   int length = x.size();
   double minimo = x[0];
   int posMin = 0;
@@ -43,19 +46,20 @@ int indiceMinimo(std::vector<double>& x) {
       posMin = i;
     }
   }
-
-  x[posMin] = 9999999; // Tengo que hacer esto porque calculo k minimos. No se me ocurre otra manera ahora
-
-  /*
+*/
+  
   std::vector<double>::iterator itMin = std::min_element(x.begin(), x.end()); 
   int posMin = std::distance(x.begin(), itMin);
 
-*/
+  x[posMin] = std::numeric_limits<double>::max(); // Tengo que hacer esto porque calculo k minimos. No se me ocurre otra manera ahora
+
+
   return posMin;
 }
 
 int indiceMaximo(std::vector<int>& x) {
 
+  /*
   int length = x.size();
   double maximo = x[0];
   int posMax = 0;
@@ -66,11 +70,12 @@ int indiceMaximo(std::vector<int>& x) {
       posMax = i;
     }
   }
-/*
+  */
+
 
   std::vector<int>::iterator itMax = std::max_element(x.begin(), x.end()); 
   int posMax = std::distance(x.begin(), itMax);
-*/
+
   if (posMax < 0 || posMax > 9)
     std::cout << "Le estas pifiando max" << std::endl;
 
@@ -115,11 +120,11 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
   int filas = imagenesTest.dimensionFilas();
   int cantidadDeAciertos = 0;
 
-  std::cout << "----------------------------------------------------------" << std::endl;
-  imagenesTrain.mostrar2();
-  std::cout << "----------------------------------------------------------" << std::endl;
-  imagenesTest.mostrar2();
-  std::cout << "----------------------------------------------------------" << std::endl;
+  //std::cout << "----------------------------------------------------------" << std::endl;
+  //imagenesTrain.mostrar2();
+  //std::cout << "----------------------------------------------------------" << std::endl;
+  //imagenesTest.mostrar2();
+  //std::cout << "----------------------------------------------------------" << std::endl;
   
   for (int i = 0; i < filas; ++i) {
 

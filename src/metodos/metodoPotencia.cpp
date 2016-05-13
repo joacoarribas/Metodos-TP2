@@ -45,8 +45,6 @@ double metodoPotencia(Matriz& A, vector<double>& x) {
 
     A.multiplicarVectorDer(x, y);
 
-    Matriz::cerearVector(x); // Reseteo el vector y
-
     c2 = maxAbs(y);
     aux = c2;
 
@@ -57,7 +55,7 @@ double metodoPotencia(Matriz& A, vector<double>& x) {
   if (k >= 15000)
     std::cout << "estoy devolviendo fruta" << std::endl;
 
-  //std::cout << "autovalor: " << std::scientific << c2 << std::endl;
+  std::cout << "autovalor: " << std::scientific << c2 << std::endl;
 
   return c2;
 

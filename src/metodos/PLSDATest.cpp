@@ -148,9 +148,9 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
   //std::cout << "-----------------------------------------" << std::endl;
   //wTras.mostrar2();
 
-  std::cout << "-----------------------------------------" << std::endl;
-  wTras.mostrar2();
-  std::cout << "-----------------------------------------" << std::endl;
+  //std::cout << "-----------------------------------------" << std::endl;
+  //wTras.mostrar2();
+  //std::cout << "-----------------------------------------" << std::endl;
 
   imagenes.multiplicarMatrices(wTras, imagenesTransformadas); // Esto es la transformación caracteritisca
 }
