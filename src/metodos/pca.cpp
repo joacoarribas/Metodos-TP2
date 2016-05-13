@@ -42,6 +42,8 @@ void calcular_base_ortonormal(Matriz& m, Matriz& matriz_ortonormal, int alfa){ /
 
   for (int i = 0; i < alfa; ++i) { //repito alfa veces (hay que experimentar con dicho valor)
     Matriz::cargarVector(aux);
+  std::cout << "por entrar a metodo potencia" << std::endl;
+
     autovalor = metodoPotencia(m, aux); //calculo el i-ésimo autovalor, en aux queda el autovector
   std::cout << "5" << std::endl;
     for (int k = 0; k < n; ++k){
@@ -66,18 +68,26 @@ void PCA(Matriz& matriz, Matriz& res, int alfa){
   calcular_matriz_covarianza(matriz, X);
   std::cout << "4" << std::endl;
 
-  Matriz matriz_ortonormal(alfa, m); //revisar dimensiones
+  Matriz Xt(m, n);
+  X.trasponer(Xt);
+  
+  Matriz m_covarianza(n, n); //revisar dimensiones
+
+  X.multiplicarMatrices(Xt, m_covarianza); //crear matriz covarianza
+
+  Matriz m_ortonormal(alfa, m);
+
   /* Reducción de la dimensión */
-  calcular_base_ortonormal(matriz, matriz_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa columnas
+  calcular_base_ortonormal(m_covarianza, m_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa columnas
   std::cout << "7" << std::endl;
   /* Transformación característica */
-  Matriz matriz_ortonormal_traspuesta(alfa, n);
+  Matriz m_ortonormal_traspuesta(alfa, n);
   std::cout << "8" << std::endl;
-  matriz_ortonormal.trasponer(matriz_ortonormal_traspuesta);
+  m_ortonormal.trasponer(m_ortonormal_traspuesta);
   std::cout << "9" << std::endl;
 
   /* Transformación característica */
-  res.multiplicarMatrices(matriz_ortonormal_traspuesta, matriz); 
+  res.multiplicarMatrices(m_ortonormal_traspuesta, matriz); 
   std::cout << "10" << std::endl;
 
 }
