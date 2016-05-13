@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "../clases/Matriz.h"
 
-#define EPSILON 1.19e-4f
+#define EPSILON 1.19e-7f
 
 bool igualdadConTolerancia(double a, double b) {
   if (std::abs(a - b) < EPSILON) {
