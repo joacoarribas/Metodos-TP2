@@ -77,7 +77,7 @@ int indiceMaximo(std::vector<int>& x) {
   return posMax;
 }
     
-int dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos) {
+int dameEtiquetaEstimada(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos) {
 
   int filas = imagenesTrain.dimensionFilas();
   int columnas = imagenesTrain.dimensionColumnas();
@@ -115,14 +115,15 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
   int filas = imagenesTest.dimensionFilas();
   int cantidadDeAciertos = 0;
 
-  imagenesTrain.mostrar();
   std::cout << "----------------------------------------------------------" << std::endl;
-  imagenesTest.mostrar();
+  imagenesTrain.mostrar2();
+  std::cout << "----------------------------------------------------------" << std::endl;
+  imagenesTest.mostrar2();
   std::cout << "----------------------------------------------------------" << std::endl;
   
   for (int i = 0; i < filas; ++i) {
 
-    int etiqueta = dameEtiqueta(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
+    int etiqueta = dameEtiquetaEstimada(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
     imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
 
  /*   

@@ -140,10 +140,17 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
   // Los autovectores estan como FILAS de la matriz w. Para multiplicarla por imagenes tengo que trasponerla
   
   Matriz wTras(m, dimensiones);
-
-  wTras.mostrar();
-
   w.trasponer(wTras);
+
+  //w.mostrar();
+  //std::cout << "-----------------------------------------" << std::endl;
+  ////wTras.mostrar();
+  //std::cout << "-----------------------------------------" << std::endl;
+  //wTras.mostrar2();
+
+  std::cout << "-----------------------------------------" << std::endl;
+  wTras.mostrar2();
+  std::cout << "-----------------------------------------" << std::endl;
 
   imagenes.multiplicarMatrices(wTras, imagenesTransformadas); // Esto es la transformación caracteritisca
 }
