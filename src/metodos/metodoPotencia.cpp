@@ -55,6 +55,8 @@ double metodoPotencia(Matriz& A, vector<double>& x) {
   if (k >= 15000)
     std::cout << "estoy devolviendo fruta" << std::endl;
 
+  //std::cout << "autovalor: " << std::scientific << c2 << std::endl;
+
   return c2;
 
 }

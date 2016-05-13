@@ -1,6 +1,9 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fstream>
+#include <iostream>
+#include <string>
 #include "metodoPotencia.cpp"
 
 void normalizar(std::vector<double>& x) {
@@ -101,7 +104,7 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
 		//calcular wi el autovector asociado al mayor autovalo de Mi
 		std::vector<double>& wi = w[i]; // Si w = nxm entonces wi = m
 		Matriz::cargarVector(wi);
-    metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
+    double autovalor = metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
 
 		//normalizar wi con norma 2
 		normalizar(wi);
@@ -129,12 +132,16 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
     nY.multiplicarVectoresDameMatriz(ti, tiY); // nX = ti * tii = ti * ti^t * X
 
     Y.menos(nY); // Termino de actualizar X
-    std::cout << "iteracion: " << i+1 << " de " << dimensiones << std::endl;
+    //std::cout << std::endl;
+    //std::cout << "iteracion: " << i+1 << " de " << dimensiones << std::endl;
+    //std::cout << std::endl;
 	}
 
   // Los autovectores estan como FILAS de la matriz w. Para multiplicarla por imagenes tengo que trasponerla
   
   Matriz wTras(m, dimensiones);
+
+  wTras.mostrar();
 
   w.trasponer(wTras);
 

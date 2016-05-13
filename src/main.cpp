@@ -33,19 +33,46 @@ double dameNorma(std::vector<double>& x) {
 }
 
 int indiceMinimo(std::vector<double>& x) {
+  int length = x.size();
+  double minimo = x[0];
+  int posMin = 0;
 
+  for (int i = 1; i < length; ++i) {
+    if (x[i] < minimo) {
+      minimo = x[i];
+      posMin = i;
+    }
+  }
+
+  x[posMin] = 9999999; // Tengo que hacer esto porque calculo k minimos. No se me ocurre otra manera ahora
+
+  /*
   std::vector<double>::iterator itMin = std::min_element(x.begin(), x.end()); 
   int posMin = std::distance(x.begin(), itMin);
 
-  x[posMin] = 99999999; // Tengo que hacer esto porque calculo k minimos. No se me ocurre otra manera ahora
-  
+*/
   return posMin;
 }
 
 int indiceMaximo(std::vector<int>& x) {
 
+  int length = x.size();
+  double maximo = x[0];
+  int posMax = 0;
+
+  for (int i = 1; i < length; ++i) {
+    if (x[i] > maximo) {
+      maximo = x[i];
+      posMax = i;
+    }
+  }
+/*
+
   std::vector<int>::iterator itMax = std::max_element(x.begin(), x.end()); 
   int posMax = std::distance(x.begin(), itMax);
+*/
+  if (posMax < 0 || posMax > 9)
+    std::cout << "Le estas pifiando max" << std::endl;
 
   return posMax;
 }
@@ -55,8 +82,8 @@ int dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos
   int filas = imagenesTrain.dimensionFilas();
   int columnas = imagenesTrain.dimensionColumnas();
 
-  std::vector<double> x(columnas);
-  std::vector<double> y(filas);
+  std::vector<double> x(columnas, 0);
+  std::vector<double> y(filas, 0);
 
   for (int i = 0; i < filas; ++i) {
 
@@ -64,8 +91,6 @@ int dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos
       x[j] = imagen[j] - imagenesTrain[i][j];
 
     y[i] = dameNorma(x);
-//    std::cout << "norma: " << y[i] << std::endl;
-      // quiero sacar ccantidad de vecinos etiquetas (de 0 a 9). Sacar el maximo de ahí.
   }
 
   // El vector y tiene en la i-esima posicion la norma |imagen - y[i]|_2
@@ -75,7 +100,8 @@ int dameEtiqueta(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos
   while (vecinos > 0) {
     int i = indiceMinimo(y); // Me fijo cual es la imagen que minimiza la norma en cada iteracion
     int etiqueta = imagenesTrain.dameEtiqueta(i); // Me fijo cual es la etiqueta de dicho minimo
-    labels[etiqueta]++;
+    labels[etiqueta] += 1;
+    //labels[etiqueta]++;
 
     vecinos--;
   }
@@ -88,6 +114,11 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
 
   int filas = imagenesTest.dimensionFilas();
   int cantidadDeAciertos = 0;
+
+  imagenesTrain.mostrar();
+  std::cout << "----------------------------------------------------------" << std::endl;
+  imagenesTest.mostrar();
+  std::cout << "----------------------------------------------------------" << std::endl;
   
   for (int i = 0; i < filas; ++i) {
 
@@ -182,18 +213,12 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
     //
 
     int tamImagen = 784;
-//    int tamImagen = 1;
-//    vector< vector<double> > imagenesTrain2(cantImagenesTrain, vector<double>(tamImagen));
-//    vector< vector<double> > imagenesTest2(cantImagenesTest, vector<double>(tamImagen));
-//    vector< int > agenesTest2(cantImagenesTrain);
-//    vector< int > agenesTest3(cantImagenesTrain);
-//    vector< int > agenesTest4(cantImagenesTest);
-//    vector< int > agenesTest5(cantImagenesTest);
+
     Matriz imagenesTrain(cantImagenesTrain, tamImagen);
-    Matriz imagenesTrainReducida(imagenesTrain.dimensionFilas(), dimensiones);
+    Matriz imagenesTrainReducida(cantImagenesTrain, dimensiones);
 
     Matriz imagenesTest(cantImagenesTest, tamImagen);
-    Matriz imagenesTestReducida(imagenesTest.dimensionFilas(), dimensiones);
+    Matriz imagenesTestReducida(cantImagenesTest, dimensiones);
 
     int h = 0; // Marca el índice de imagenesTrain
     int r = 0; // Marca el índice de imagenesTest

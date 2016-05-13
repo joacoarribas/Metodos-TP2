@@ -42,11 +42,9 @@ void Matriz::estimar(int i, int etiqueta){
 void Matriz::trasponer(Matriz& traspuesta) {
   assert(this->filas == traspuesta.dimensionColumnas() && this->columnas == traspuesta.dimensionFilas());
 
-  for (int f = 0; f < this->filas; ++f) {
-    for (int c = 0; c < this->columnas; ++c) {
+  for (int f = 0; f < this->filas; ++f)
+    for (int c = 0; c < this->columnas; ++c)
       traspuesta[c][f] = this->matriz[f][c];
-    }
-  }
 
 }
 
@@ -127,7 +125,7 @@ void Matriz::randomizar(int semilla) {
 }
 
 void Matriz::mostrar() {
-  for (int f = 0; f < filas; ++f) {
+  for (int f = 0; f < 25; ++f) {
     cout << "  ";
     for (int c = 0; c < columnas; ++c) {
       if (matriz[f][c] >= 100) {
