@@ -125,9 +125,9 @@ void Matriz::randomizar(int semilla) {
 }
 
 void Matriz::mostrar() {
-  for (int f = 0; f < 25; ++f) {
+  for (int f = 0; f < this->filas; ++f) {
     cout << "  ";
-    for (int c = 0; c < columnas; ++c) {
+    for (int c = 0; c < 6; ++c) {
       if (matriz[f][c] >= 100) {
         cout << "| " << matriz[f][c] << " |" << " ";
       } else {
@@ -139,6 +139,27 @@ void Matriz::mostrar() {
       }
     }
 
+  cout << endl;
+  }
+}
+
+void Matriz::mostrar2() {
+  for (int f = 4; f < 15; ++f) {
+    cout << "  ";
+    for (int c = 0; c < this->columnas; ++c) {
+      if (matriz[f][c] >= 100) {
+        cout << "| " << matriz[f][c] << " |" << " ";
+      } else {
+        if (matriz[f][c] >= 10) {
+          cout << "|  " << matriz[f][c] << " |" << " ";
+        } else {
+          cout << "|  " << matriz[f][c] << "  |" << " ";
+        }
+      }
+    }
+
+  cout << endl;
+  cout << endl;
   cout << endl;
   }
 }

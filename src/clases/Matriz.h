@@ -37,6 +37,7 @@ class Matriz {
     void etiquetar(int i, int etiqueta);
     void estimar(int i, int etiqueta);
     void mostrar();
+    void mostrar2();
     void trasponer(Matriz& traspuesta);
     void randomizar(int semilla);
 

@@ -16,7 +16,7 @@ double maxAbs(vector<double>& x) {
   double max = std::abs(x[0]);
   int length = x.size();
 
-  for (size_t i = 0; i < length; ++i) {
+  for (size_t i = 1; i < length; ++i) {
     if (std::abs(x[i]) > max)
       max = std::abs(x[i]);
   }
@@ -55,7 +55,7 @@ double metodoPotencia(Matriz& A, vector<double>& x) {
   if (k >= 15000)
     std::cout << "estoy devolviendo fruta" << std::endl;
 
-  //std::cout << "autovalor: " << std::scientific << c2 << std::endl;
+  std::cout << "autovalor: " << std::scientific << c2 << std::endl;
 
   return c2;
 
