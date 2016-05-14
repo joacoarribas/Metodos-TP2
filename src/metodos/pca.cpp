@@ -7,6 +7,7 @@
 void calcular_media(Matriz& matriz, vector<double>& v) { //ver si se pierde precisión con la división
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
+
   for (int j = 0; j < m; ++j) {
     for (int i = 0; i < n; ++i) {
       v[j] = (v[j] + matriz[i][j]); //acumulo
@@ -15,7 +16,7 @@ void calcular_media(Matriz& matriz, vector<double>& v) { //ver si se pierde prec
   }
 }
 
-void calcular_matriz_covarianza(Matriz& matriz, Matriz& res){
+void calcular_matriz_X(Matriz& matriz, Matriz& res){
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
 
@@ -36,6 +37,7 @@ void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alf
   double autovalor;
   int m = matriz_ortonormal.dimensionColumnas();
   vector<double> aux(m);
+  vector<double> aux2(m);
 
   for (int i = 0; i < alfa; ++i) { //repito alfa veces (hay que experimentar con dicho valor)
     Matriz::cargarVector(aux);
@@ -47,8 +49,11 @@ void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alf
     }
     /* Deflación */
     Matriz auxiliar(m, m);
-    auxiliar.multiplicarVectoresDameMatriz(aux, aux);
-    auxiliar.multiplicarEscalar(autovalor);
+    for (int i = 0; i < m; ++i)
+      aux2[i] = aux[i] * autovalor;
+
+    auxiliar.multiplicarVectoresDameMatriz(aux, aux2);
+    //auxiliar.multiplicarEscalar(autovalor);
     matriz.menos(auxiliar);
   } 
   /* Tengo en matriz_ortonormal la matriz con base de autovectores de matriz */
@@ -59,14 +64,16 @@ void PCA(Matriz& matriz, Matriz& res, int alfa){
   int m = matriz.dimensionColumnas();
 
   Matriz X(n, m);
-  calcular_matriz_covarianza(matriz, X);
+  calcular_matriz_X(matriz, X);
 
   Matriz Xt(m, n);
   X.trasponer(Xt);
-  
+
   Matriz m_covarianza(m, m); //revisar dimensiones
 
+  std::cout << "antes de entrar a multiplicar" << std::endl;
   Xt.multiplicarMatrices(X, m_covarianza); //crear matriz covarianza
+  std::cout << "after" << std::endl;
 
   Matriz m_ortonormal(alfa, m);
 
