@@ -52,7 +52,7 @@ void Matriz::trasponer(Matriz& traspuesta) {
 	 *          Operadores         *
 	 *******************************/ 
 
-void Matriz::multiplicarEscalar(int i) {
+void Matriz::multiplicarEscalar(double i) {
 
   for (int f = 0; f < this->filas; ++f)
     for (int c = 0; c < this->columnas; ++c)
@@ -144,9 +144,9 @@ void Matriz::mostrar() {
 }
 
 void Matriz::mostrar2() {
-  for (int f = 4; f < 15; ++f) {
+  for (int f = 4; f < 20; ++f) {
     cout << "  ";
-    for (int c = 0; c < this->columnas; ++c) {
+    for (int c = 0; c < 7; ++c) {
       if (matriz[f][c] >= 100) {
         cout << "| " << matriz[f][c] << " |" << " ";
       } else {

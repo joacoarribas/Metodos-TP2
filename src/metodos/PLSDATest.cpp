@@ -7,6 +7,8 @@
 #include <string>
 #include "metodoPotencia.cpp"
 
+/* Funciones PLSDA */
+
 void normalizar(std::vector<double>& x) {
 	double norma2 = 0;
   long length = x.size();

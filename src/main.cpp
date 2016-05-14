@@ -1,6 +1,7 @@
 #include "clases/Matriz.h"
 //#include "metodos/PLSDA.cpp"
-#include "metodos/PLSDATest.cpp"
+//#include "metodos/PLSDATest.cpp"
+#include "metodos/pca.cpp"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -26,9 +27,13 @@ double get_time() {
 
 /* Auxiliares estadística */
 
-double calcularPrecision(Matriz& imagenes) {
+void calcularEstadisticas(Matriz& imagenes) {
   std::vector<int> tp(10, 0);
   std::vector<int> fp(10, 0);
+  std::vector<int> fn(10, 0);
+
+  vector<double> precisiones(10, 0);
+  vector<double> recalls(10, 0);
 
   int filas = imagenes.dimensionFilas();
 
@@ -37,17 +42,35 @@ double calcularPrecision(Matriz& imagenes) {
     int estimacion = imagenes.dameEstimacion(i);
     int etiqueta = imagenes.dameEtiqueta(i);
     
-    if (estimacion == etiqueta) {
-      tp[etiqueta] += 1;
-
+    if (estimacion == etiqueta) { 
+      tp[etiqueta] += 1;  // pertenecia a la clase "etiqueta" y lo estime bien. Es un verdadero positivo para la clase "etiqueta"
+      
+    } else { 
+      fp[estimacion] += 1; // Supuse que era de la clase "estimacion" pero era de la clase "etiqueta". Es un falso positivo para la clase "estimacion"
+      fn[etiqueta] += 1; // Pertenecia a la clase "etiqueta" pero me identificaron con la clase "estimacion". Es un falso negativo para la clase "etiqueta"
     }
+
   }
 
+  //std::cout << "-----------------------------------------" << std::endl;
+  //std::cout << "Cálculo precision: " << std::endl;
+  for (int i = 0; i < 10; ++i) {
+    double precision = (double)tp[i] / (double)(tp[i] + fp[i]);
+    precisiones[i] = precision;
+
+    double recall = (double)tp[i] / (double)(tp[i] + fn[i]);
+    recalls[i] = recall;
+
+    //std::cout << "Precisión clase " << i << ": " << precision << std::endl; 
+  }
+
+  std::cout << "-----------------------------------------" << std::endl;
+  std::cout << "Cálculo precision: " << std::endl;
+
+
+  
+
 }
-
-
-
-
 
 /* Auxiliares */
 
@@ -137,17 +160,13 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
     std::cout << "estimación: " << imagenesTest.dameEstimacion(i) << std::endl;
   */
     if (etiqueta == imagenesTest.dameEtiqueta(i))
-      cantidadDeAciertos++;
+      hitRate++;
   }
 
   std::cout << "cantidad de imagenes Test" << filas << std::endl;
   std::cout << "cantidad de aciertos (Hit Rate): " << hitRate << std::endl;
 
-  calcularPrecision(imagenesTest);
-
-  calcularRecall(imagenesTest);
-
-
+  calcularEstadisticas(imagenesTest);
 
   return hitRate; // Esto no sé si es necesario aún
 
@@ -288,11 +307,11 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
     // imagenesTrainPCA tendrá la transformación característica de PCA
     // isTrain tiene para cada imagen (de 0 a cantImagenesTotales) si es parte del train o no
 
-    Matriz autovectoresPCA(dimensiones, tamImagen);
-    //PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, filewrite);
+    Matriz autovectoresPCA(componentes, tamImagen);
+    PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileWrite);
 
     Matriz autovectoresPLSDA(dimensiones, tamImagen);
-    PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileWrite); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+    //PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileWrite); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
     
 
     switch(method) {

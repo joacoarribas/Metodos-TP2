@@ -2,104 +2,109 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "metodos/metodoPotencia.cpp"
+#include "metodoPotencia.cpp"
+
+/* Funciones PCA*/
+
+void normalizar(std::vector<double>& x) {
+	double norma2 = 0;
+  long length = x.size();
+
+	for (int i=0; i<length; ++i) {
+		norma2 = norma2 + (x[i] * x[i]);
+	}
+
+	norma2 = sqrt(norma2);
+
+	for (int i=0; i<length; ++i) {
+		x[i] = x[i] / norma2;
+	}		
+}
 
 void calcular_media(Matriz& matriz, vector<double>& v) { //ver si se pierde precisión con la división
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
+
   for (int j = 0; j < m; ++j) {
     for (int i = 0; i < n; ++i) {
       v[j] = (v[j] + matriz[i][j]); //acumulo
     }
-    v[j] = v[j] / (double)m; //calculo promedio final
+    v[j] = v[j] / (double)n; //calculo promedio final
   }
 }
 
-Matriz& calcular_matriz_covarianza(Matriz& matriz){
+void calcular_matriz_X(Matriz& matriz, Matriz& res){
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
-  Matriz *res = new Matriz(n, n);
 
-  vector<double> media(n);
+  vector<double> media(m, 0.0);
+  
   calcular_media(matriz, media);
+  
   double divisor = sqrt ((double)n - 1.0);
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
-      (*res)[i][j] = (matriz[i][j] - media[i]) / divisor; //escribo resultado en la matriz
+
+  for (int j = 0; j < m; ++j) {
+    for (int i = 0; i < n; ++i) {
+      res[i][j] = (matriz[i][j] - media[j]) / divisor; //escribo resultado en la matriz
     }
   }
-  return *res;
 }
 
-void calcular_base_ortonormal(Matriz& m, Matriz& matriz_ortonormal, int alfa){ //deja en matriz_ortonormal una matriz de alfa columnas
+void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alfa){ //deja en matriz_ortonormal una matriz de alfa columnas
   double autovalor;
-  vector<double> aux(matriz_ortonormal.dimensionColumnas());  
+  int m = matriz_ortonormal.dimensionColumnas();
 
   for (int i = 0; i < alfa; ++i) { //repito alfa veces (hay que experimentar con dicho valor)
+
+    vector<double>& aux = matriz_ortonormal[i];
+
     Matriz::cargarVector(aux);
-    autovalor = metodoPotencia(m, aux); //calculo el i-ésimo autovalor, en aux queda el autovector
-    for (int k = 0; k < matriz_ortonormal.dimensionColumnas(); ++k){
-      matriz_ortonormal[i][k] = aux[k]; //completo matriz con base ortonormal
-    }
+
+    matriz.mostrar2();
+
+    autovalor = metodoPotencia(matriz, aux); //calculo el i-ésimo autovalor, en aux queda el autovector
+    std::cout << "autovalor: " << i << " vale: " << std::scientific << autovalor << std::endl;
+
     /* Deflación */
-    Matriz auxiliar = Matriz::multiplicarVectoresDameMatriz(aux, aux);
-    m - (auxiliar * autovalor);
+    Matriz auxiliar(m, m);
+    std::cout << "-----------------------------------" << std::endl;
+
+    normalizar(aux);
+
+    auxiliar.multiplicarVectoresDameMatriz(aux, aux);
+    auxiliar.multiplicarEscalar(autovalor);
+    matriz.menos(auxiliar);
+
+    matriz.mostrar2();
+
+    while (true) {}
   } 
   /* Tengo en matriz_ortonormal la matriz con base de autovectores de matriz */
 }
 
-Matriz& PCA(Matriz& matriz){
+void PCAMethod(Matriz& matriz, Matriz& res, Matriz& m_ortonormal, int alfa, std::ofstream& filewrite){
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
 
-  Matriz matriz_covarianza = calcular_matriz_covarianza(matriz);
+  Matriz X(n, m);
+  calcular_matriz_X(matriz, X);
 
-  int alfa = 10; //alfa valor arbitrario
-  Matriz *matriz_ortonormal = new Matriz(n, alfa); //revisar dimensiones
+  Matriz Xt(m, n);
+  X.trasponer(Xt);
+
+  Matriz m_covarianza(m, m); //revisar dimensiones
+
+  std::cout << "antes de entrar a multiplicar" << std::endl;
+  Xt.multiplicarMatrices(X, m_covarianza); //crear matriz covarianza
+  std::cout << "after" << std::endl;
+
   /* Reducción de la dimensión */
-  calcular_base_ortonormal(matriz, *matriz_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa columnas
+  calcular_base_ortonormal(m_covarianza, m_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa filas
+
   /* Transformación característica */
-  Matriz matriz_ortonormal_traspuesta = matriz_ortonormal->transponer();
+  Matriz m_ortonormal_traspuesta(m, alfa);
+  m_ortonormal.trasponer(m_ortonormal_traspuesta);
 
-  Matriz *res = new Matriz(alfa, n); //revisar dimensiones
-  *res = matriz_ortonormal_traspuesta * matriz;
-  return *res;
+  /* Transformación característica */
+  matriz.multiplicarMatrices(m_ortonormal_traspuesta, res); // Chequear esto en caso de que no ande
 }
-
-int main(){
-  return 0;
-}
-
-//void calcular_matriz(Matriz& matriz) { NO ME BORREN ESTO POR AHORA PORFIS
-//  int n = matriz.dimensionFilas();
-//  int m = matriz.dimensionColumnas();
-//
-//  vector<double> media(n);
-//  calcular_media(matriz, media);
-//  double divisor = sqrt ((double)n - 1.0);
-//  for (int i = 0; i < n; ++i) {
-//    for (int j = 0; j < m; ++j) {
-//      matriz[i][j] = (matriz[i][j] - media[i]) / divisor;
-//    }
-//  }
-//  /* Cuando termina este paso tengo la matriz de covarianza en matriz */
-//  //ahora tengo que diagonalizar matriz
-//  Matriz *base_ortonormal = new Matriz(n, n);
-//  vector<double> aux(base_ortonormal->dimensionColumnas());  
-//  int alfa = 10; //defino valor arbitrario
-//  double autovalor;
-//
-//  for (int i = 0; i < alfa; ++i) {
-//    Matriz::cargarVector(aux);
-//    autovalor = metodoPotencia(matriz, aux); //calculo el i-ésimo autovalor
-//    for (int k = 0; k < base_ortonormal->dimensionColumnas(); ++k){
-//      (*base_ortonormal)[i][k] = aux[k]; //completo matriz con base ortonormal
-//    }
-//    /* Deflación */
-//    Matriz auxiliar = Matriz::multiplicarVectoresDameMatriz(aux, aux);
-//    matriz- (auxiliar * autovalor);
-//  } 
-//  /* Tengo en matriz_ortonormal la matriz con base de autovectores de matriz */
-//  
-//}
-
