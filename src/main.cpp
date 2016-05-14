@@ -1,7 +1,8 @@
 #include "clases/Matriz.h"
 //#include "metodos/PLSDA.cpp"
 //#include "metodos/PLSDATest.cpp"
-#include "metodos/pca.cpp"
+//#include "metodos/pca.cpp"
+#include "metodos/metodoPotencia.cpp"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -11,6 +12,8 @@
 #include <queue>
 #include <sys/time.h>
 #include <limits>
+
+/* Empieza funciones Toma de tiempos */
 
 timeval sstart, eend;
 double acum = 0;
@@ -25,9 +28,11 @@ double get_time() {
   return (1000000*(eend.tv_sec-sstart.tv_sec) + (eend.tv_usec-sstart.tv_usec))/1000000.0;
 }
 
-/* Auxiliares estadística */
+/* Termina funciones Toma de tiempos */
 
-void calcularEstadisticas(Matriz& imagenes) {
+/* Empieza Auxiliares estadística */
+
+void calcularEstadisticas(Matriz& imagenes, std::ostream& fEstadisticas) {
   std::vector<int> tp(10, 0);
   std::vector<int> fp(10, 0);
   std::vector<int> fn(10, 0);
@@ -52,27 +57,51 @@ void calcularEstadisticas(Matriz& imagenes) {
 
   }
 
-  //std::cout << "-----------------------------------------" << std::endl;
-  //std::cout << "Cálculo precision: " << std::endl;
   for (int i = 0; i < 10; ++i) {
     double precision = (double)tp[i] / (double)(tp[i] + fp[i]);
     precisiones[i] = precision;
 
     double recall = (double)tp[i] / (double)(tp[i] + fn[i]);
     recalls[i] = recall;
-
-    //std::cout << "Precisión clase " << i << ": " << precision << std::endl; 
   }
 
-  std::cout << "-----------------------------------------" << std::endl;
-  std::cout << "Cálculo precision: " << std::endl;
+  fEstadisticas << "-----------------------------------------" << std::endl;
+  fEstadisticas << "Cálculo precision: " << std::endl;
 
+  double precision = 0;
+  for (int i = 0; i < 10; ++i) {
+    fEstadisticas << "Precisión clase " << i << ": " << std::fixed << precisiones[i] << std::endl; 
+    precision += precisiones[i];
+  }
 
-  
+  precision /= 10.0;
+
+  fEstadisticas << "Precisión categorizador: " << std::fixed << precision << std::endl; 
+
+  fEstadisticas << "-----------------------------------------" << std::endl;
+  fEstadisticas << "Cálculo recall: " << std::endl;
+
+  double recall = 0;
+  for (int i = 0; i < 10; ++i) {
+    fEstadisticas << "Recall clase " << i << ": " << std::fixed << recalls[i] << std::endl; 
+    recall += recalls[i];
+  }
+
+  recall /= 10.0;
+
+  fEstadisticas << "Recall categorizador: " << std::fixed << recall << std::endl; 
+
+  double F1 = (2 * precision * recall) / (precision + recall);
+
+  fEstadisticas << "F1: " << std::fixed << F1 << std::endl; 
+  fEstadisticas << "-----------------------------------------" << std::endl;
+  fEstadisticas << "-----------------------------------------" << std::endl;
 
 }
 
-/* Auxiliares */
+/* Termina auxiliares Estadistica */
+
+/* Empieza auxiliares metodos */
 
 double dameNorma(std::vector<double>& x) {
   double norm = 0;
@@ -81,6 +110,21 @@ double dameNorma(std::vector<double>& x) {
     norm += x[i] * x[i];
     
   return sqrt(norm);
+}
+
+void normalizar(std::vector<double>& x) {
+	double norma2 = 0;
+  long length = x.size();
+
+	for (int i=0; i<length; ++i) {
+		norma2 = norma2 + (x[i] * x[i]);
+	}
+
+	norma2 = sqrt(norma2);
+
+	for (int i=0; i<length; ++i) {
+		x[i] = x[i] / norma2;
+	}		
 }
 
 int indiceMinimo(std::vector<double>& x) {
@@ -102,7 +146,231 @@ int indiceMaximo(std::vector<int>& x) {
   return posMax;
 }
 
-/* KNN */
+void calcular_media(Matriz& matriz, vector<double>& v) { //ver si se pierde precisión con la división
+  int n = matriz.dimensionFilas();
+  int m = matriz.dimensionColumnas();
+
+  for (int j = 0; j < m; ++j) {
+    for (int i = 0; i < n; ++i)
+      v[j] += matriz[i][j]; //acumulo
+
+    v[j] /= (double)n; //calculo promedio final
+  }
+}
+
+void calcular_matriz_X(Matriz& matriz, Matriz& res){
+  int n = matriz.dimensionFilas();
+  int m = matriz.dimensionColumnas();
+
+  vector<double> media(m, 0);
+  
+  calcular_media(matriz, media);
+  
+  double divisor = sqrt ((double)n - 1.0);
+
+  for (int j = 0; j < m; ++j)
+    for (int i = 0; i < n; ++i)
+      res[i][j] = (matriz[i][j] - media[j]) / divisor; //escribo resultado en la matriz
+
+}
+
+/* Termina auxiliares Metodos */
+
+/* Empieza PCA */
+
+void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alfa){ //deja en matriz_ortonormal una matriz de alfa columnas
+  int m = matriz_ortonormal.dimensionColumnas();
+
+  for (int i = 0; i < alfa; ++i) { //repito alfa veces (hay que experimentar con dicho valor)
+
+    vector<double>& aux = matriz_ortonormal[i];
+
+    Matriz::cargarVector(aux);
+
+
+    double autovalor = metodoPotencia(matriz, aux); //calculo el i-ésimo autovalor, en aux queda el autovector
+    std::cout << "autovalor: " << i << " vale: " << std::scientific << autovalor << std::endl;
+
+    normalizar(aux);
+
+    /* Deflación */
+    Matriz auxiliar(m, m);
+    //
+    vector<double> aux2(m, 0);
+
+    for (int i = 0; i < m; ++i) {
+      aux2[i] = aux[i] * autovalor;
+    }
+
+    auxiliar.multiplicarVectoresDameMatriz(aux, aux2);
+    //auxiliar.multiplicarEscalar(autovalor);
+    matriz.menos(auxiliar);
+
+  } 
+  /* Tengo en matriz_ortonormal la matriz con base de autovectores de matriz */
+}
+
+void PCAMethod(Matriz& matriz, Matriz& res, Matriz& m_ortonormal, int alfa, std::ofstream& filewrite){
+  int n = matriz.dimensionFilas();
+  int m = matriz.dimensionColumnas();
+
+  Matriz X(n, m);
+  calcular_matriz_X(matriz, X);
+
+  Matriz Xt(m, n);
+  X.trasponer(Xt);
+
+  Matriz m_covarianza(m, m); //revisar dimensiones
+
+  std::cout << "antes de entrar a multiplicar" << std::endl;
+  Xt.multiplicarMatrices(X, m_covarianza); //crear matriz covarianza
+  std::cout << "after" << std::endl;
+
+  //for (int i = 0; i < m; ++i) { 
+  //  for (int j = 0; j < m; ++j) {
+  //    if (!igualdadConTolerancia(m_covarianza[i][j], 0)) {
+  //      std::cout << "fila " << i << " columna " << j << std::endl;
+  //      std::cout << m_covarianza[i][j] << std::endl;
+  //    }
+  //  }
+  //}
+
+  /* Reducción de la dimensión */
+  calcular_base_ortonormal(m_covarianza, m_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa filas
+
+  /* Transformación característica */
+  Matriz m_ortonormal_traspuesta(m, alfa);
+  m_ortonormal.trasponer(m_ortonormal_traspuesta);
+
+  /* Transformación característica */
+  matriz.multiplicarMatrices(m_ortonormal_traspuesta, res); // Chequear esto en caso de que no ande
+}
+
+/* Termina PCA */
+
+
+/* Empieza PLSDA */
+
+void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTrainPLSDA, Matriz& autovectores, int dimensiones, std::ostream& filewrite) {
+
+	long n = imagenes.dimensionFilas();
+	long m = imagenes.dimensionColumnas();
+	double raizN = sqrt((double)n-1.0);
+
+	Matriz X(n, m);
+	Matriz Y(n, 10);
+
+	//calcular mu = promedio de la suma de todos los vectores
+  std::vector<double> promedios(n, 0);
+  for (int j = 0; j < m; ++j) {
+    for (int i = 0; i < n; ++i)
+			promedios[j] += imagenes[i][j];
+
+		promedios[j] /= (double)n; 
+	}
+
+	//X matriz de nXm donde cada fila es traspuesta(x_i − μ)/raiz(n − 1)
+  for (int j = 0; j < m; ++j)
+    for (int i = 0; i < n; ++i)
+			X[i][j] = (imagenes[i][j] - promedios[j]) / raizN;
+
+	//defino preY de nX10 que tiene 1 en preY_i,j si la i-esima muestra de la base corresponde al digito j-1
+  //-1 en caso contrario
+	Matriz preY(n, 10);
+	for (int i = 0; i < n; ++i) {
+		for (int j = 0; j < 10; ++j) {
+			if (imagenes.dameEtiqueta(i) == j) {
+				preY[i][j] = 1;
+			} else {
+				preY[i][j] = -1;
+			}
+		}
+  }
+
+	//defino promY de nX1 con promY_i = promedio de la fila i-esima de preY
+  std::vector<double> promY(n, 0);
+  for (int j = 0; j < 10; ++j) {
+    for (int i = 0; i < n; ++i)
+			promY[j] += preY[i][j];
+
+		promY[j] /= (double)n; //esto puede traer error
+	}
+
+	//defino Y como preY_i − promY_i / raiz(n-1)
+  for (int j = 0; j < 10; ++j)
+    for (int i = 0; i < n; ++i)
+			Y[i][j] = (preY[i][j] - promY[j]) / raizN;
+
+  // Tengo dimensiones cantidad de autovectores de tamaño m
+
+	for (int i=0; i<dimensiones; ++i) {
+
+		Matriz Xtras(m, n);
+    X.trasponer(Xtras);
+
+		Matriz Ytras(10,n);
+    Y.trasponer(Ytras);
+
+		Matriz Mi(m, m);
+		
+    if (true) { // Hago esto para Xtranss e Ytranss mueran despues del scope, no las necesito más
+      Matriz Xtrass(m, 10);
+      Matriz Ytrass(10, m);
+
+      Xtras.multiplicarMatrices(Y, Xtrass); // Xtrass = X^t * Y
+      Ytras.multiplicarMatrices(X, Ytrass); // Ytrass = Y^t * X
+
+      Xtrass.multiplicarMatrices(Ytrass, Mi); // Xtrass * Ytrass = X^t * Y * Y^t * X
+    }
+
+		//calcular el autovector asociado al mayor autovalo de Mi
+		std::vector<double>& autovector = autovectores[i]; // Si w = nxm entonces wi = m
+		Matriz::cargarVector(autovector);
+
+    double autovalor = metodoPotencia(Mi, autovector); //descarto el autovalor que vino, solo necesito el auvector en wi
+    filewrite << std::scientific << autovalor << std::endl;
+
+		//normalizar autovector con norma 2
+		normalizar(autovector);
+		
+		//ti = X * wi
+		std::vector<double> ti(n, 0);
+    X.multiplicarVectorDer(autovector, ti); // x = nxm y wi = mx1 entonces ti = nx1; 
+		
+		//normalizar ti con norma 2
+		normalizar(ti);
+		
+		//	actualizar X como X − ti^t * ti * X;
+    std::vector<double> tiX(m, 0);
+    X.multiplicarVectorIzq(ti, tiX); // ti = 1xn y X = nxm entonces tiX = 1xm ; tiX = ti^t * X
+
+    Matriz nX(n, m);
+    nX.multiplicarVectoresDameMatriz(ti, tiX); // nX = ti * tiX = ti * ti^t * X
+
+    X.menos(nX); // Termino de actualizar X = X - ti * ti^t * X
+
+    std::vector<double> tiY(10, 0);
+    Y.multiplicarVectorIzq(ti, tiY); // ti = 1xn y Y = nx10 entonces tiY = 1x10 ; tiY = ti^t * Y
+
+    Matriz nY(n, 10);
+    nY.multiplicarVectoresDameMatriz(ti, tiY); // nX = ti * tii = ti * ti^t * X
+
+    Y.menos(nY); // Termino de actualizar X
+	}
+
+  // Los autovectores estan como FILAS de la matriz w. Para multiplicarla por imagenes tengo que trasponerla
+  
+  Matriz wTras(m, dimensiones);
+  autovectores.trasponer(wTras);
+
+  imagenes.multiplicarMatrices(wTras, imagenesTrainPLSDA); // Esto es la transformación caracteritisca
+
+}
+
+/* Termina PLSDA */
+
+
+/* Empieza KNN */
     
 int dameEtiquetaEstimada(Matriz& imagenesTrain, std::vector<double>& imagen, int vecinos) {
 
@@ -136,7 +404,7 @@ int dameEtiquetaEstimada(Matriz& imagenesTrain, std::vector<double>& imagen, int
  
 }
 
-int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
+int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos, std::ofstream& fEstadisticas) {
 
   int filas = imagenesTest.dimensionFilas();
   int hitRate = 0;
@@ -163,16 +431,18 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos) {
       hitRate++;
   }
 
-  std::cout << "cantidad de imagenes Test" << filas << std::endl;
-  std::cout << "cantidad de aciertos (Hit Rate): " << hitRate << std::endl;
+  fEstadisticas << "cantidad de imagenes Test: " << filas << std::endl;
+  fEstadisticas << "cantidad de aciertos (Hit Rate): " << hitRate << std::endl;
 
-  calcularEstadisticas(imagenesTest);
+  calcularEstadisticas(imagenesTest, fEstadisticas);
 
   return hitRate; // Esto no sé si es necesario aún
 
 }
 
-int evaluarTests(std::string fileTestData, std::string fileTestResult, int method) {
+/* Termina Knn */
+
+int evaluarTests(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, int method) {
 
   init_time();
   std::string lineData;
@@ -180,6 +450,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
   std::string lineTrain;
   std::ifstream fileData (fileTestData.c_str());
   std::ofstream fileWrite (fileTestResult.c_str());
+  std::ofstream fileWrite2 (fileEstadisticas.c_str());
   int z = 0;
 
   getline(fileData, lineData); // Pido primer línea para instanciar todo
@@ -307,17 +578,22 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
     // imagenesTrainPCA tendrá la transformación característica de PCA
     // isTrain tiene para cada imagen (de 0 a cantImagenesTotales) si es parte del train o no
 
-    Matriz autovectoresPCA(componentes, tamImagen);
-    PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileWrite);
 
-    Matriz autovectoresPLSDA(dimensiones, tamImagen);
-    //PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileWrite); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+      Matriz autovectoresPCA(componentes, tamImagen);
+      Matriz autovectoresPLSDA(dimensiones, tamImagen);
+    if (method == 1) {
+      PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileWrite);
+    } else {
+
+      PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileWrite); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+    }
     
+    fileWrite2 << "Iteración: " << z << std::endl;
 
     switch(method) {
       case 0: { // Método KNN
 
-          KNN(imagenesTrain, imagenesTest, vecinos);
+          KNN(imagenesTrain, imagenesTest, vecinos, fileWrite2);
 
           break;
               
@@ -330,7 +606,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
         imagenesTest.multiplicarMatrices(wTras, imagenesTestPCA);
 
-        KNN(imagenesTrainPCA, imagenesTestPCA, vecinos);
+        KNN(imagenesTrainPCA, imagenesTestPCA, vecinos, fileWrite2);
               
           break;
         }
@@ -342,7 +618,7 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 
         imagenesTest.multiplicarMatrices(wTras, imagenesTestPLSDA);
 
-        KNN(imagenesTrainPLSDA, imagenesTestPLSDA, vecinos);
+        KNN(imagenesTrainPLSDA, imagenesTestPLSDA, vecinos, fileWrite2);
         break;
 
         }
@@ -363,13 +639,14 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, int metho
 int main(int argc, char** argv) {
   std::string fileTestData(argv[1]);
   std::string fileTestResult(argv[2]);
-  int method(atoi(argv[3]));
+  std::string fileTestEstadisticas(argv[3]);
+  int method(atoi(argv[4]));
   // Recibo por parametro tres archivos
   // El primero del cual leo los datos a evaluar
   // El segundo en el cual evaluo si los resultados fueron correctos
   // El tercero el método a realizar (0 KNN, 1 PCC+KNN, 2 PLS-DA+KNN)
 
-  evaluarTests(fileTestData, fileTestResult, method);
+  evaluarTests(fileTestData, fileTestResult, fileTestEstadisticas, method);
 
   return 0;
 }

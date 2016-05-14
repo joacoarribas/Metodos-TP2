@@ -88,7 +88,7 @@ void Matriz::multiplicarMatrices(Matriz& a, Matriz& b) {
   for (int f = 0; f < this->filas; ++f)
     for (int c = 0; c < col; ++c)
       for (int k = 0; k < this->columnas; ++k)
-        b[f][c] += this->matriz[f][k] * a.matriz[k][c];
+        b[f][c] += this->matriz[f][k] * a[k][c];
       
 }
 
@@ -97,7 +97,7 @@ void Matriz::menos(Matriz& m) {
   
     for (int f = 0; f < this->filas; ++f)
       for (int c = 0; c < this->columnas; ++c)
-        this->matriz[f][c] = this->matriz[f][c] - m.matriz[f][c];
+        this->matriz[f][c] = this->matriz[f][c] - m[f][c];
   
 }
 
@@ -144,7 +144,7 @@ void Matriz::mostrar() {
 }
 
 void Matriz::mostrar2() {
-  for (int f = 4; f < 20; ++f) {
+  for (int f = 170; f < 200; ++f) {
     cout << "  ";
     for (int c = 0; c < 7; ++c) {
       if (matriz[f][c] >= 100) {
