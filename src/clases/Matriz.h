@@ -18,7 +18,7 @@ class Matriz {
     Matriz(int filas, int columnas);
     ~Matriz();
 
-    void multiplicarEscalar(int i); // Esta no se usa por ahora
+    void multiplicarEscalar(double i); // Esta no se usa por ahora
 
     void multiplicarMatrices(Matriz& a, Matriz& b); // b = this * a
     void multiplicarVectorDer(vector<double>& x, vector<double>& y);

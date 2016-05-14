@@ -26,7 +26,7 @@ double maxAbs(vector<double>& x) {
 
 double metodoPotencia(Matriz& A, vector<double>& x) {
   int length = x.size();
-  vector<double> y(length, 0);
+  vector<double> y(length, 0.0);
   int k = 0;
   double c2;
 

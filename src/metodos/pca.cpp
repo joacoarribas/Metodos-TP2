@@ -20,7 +20,7 @@ void calcular_matriz_X(Matriz& matriz, Matriz& res){
   int n = matriz.dimensionFilas();
   int m = matriz.dimensionColumnas();
 
-  vector<double> media(m, 0);
+  vector<double> media(m, 0.0);
   
   calcular_media(matriz, media);
   
@@ -37,7 +37,6 @@ void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alf
   double autovalor;
   int m = matriz_ortonormal.dimensionColumnas();
   vector<double> aux(m);
-  vector<double> aux2(m);
 
   for (int i = 0; i < alfa; ++i) { //repito alfa veces (hay que experimentar con dicho valor)
     Matriz::cargarVector(aux);
@@ -49,11 +48,9 @@ void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alf
     }
     /* Deflación */
     Matriz auxiliar(m, m);
-    for (int i = 0; i < m; ++i)
-      aux2[i] = aux[i] * autovalor;
 
-    auxiliar.multiplicarVectoresDameMatriz(aux, aux2);
-    //auxiliar.multiplicarEscalar(autovalor);
+    auxiliar.multiplicarVectoresDameMatriz(aux, aux);
+    auxiliar.multiplicarEscalar(autovalor);
     matriz.menos(auxiliar);
   } 
   /* Tengo en matriz_ortonormal la matriz con base de autovectores de matriz */

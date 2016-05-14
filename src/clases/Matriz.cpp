@@ -54,7 +54,7 @@ void Matriz::trasponer(Matriz& traspuesta) {
 	 *          Operadores         *
 	 *******************************/ 
 
-void Matriz::multiplicarEscalar(int i) {
+void Matriz::multiplicarEscalar(double i) {
 
   for (int f = 0; f < this->filas; ++f)
     for (int c = 0; c < this->columnas; ++c)
@@ -197,6 +197,40 @@ void Matriz::clean() {
     }
   }
 }
+
+//int main(){
+//
+//        std::vector<double> pepe;
+//        std::vector<double> pepa;
+//        for (int i = 0; i < 4; ++i){
+//          pepe.push_back(i);
+//          pepa.push_back(i);
+//        }
+//        std::cout << pepe.size() << std::endl;
+//        std::cout << pepa.size() << std::endl;
+//        Matriz hare(4, 4);
+//        std::cout << hare.dimensionColumnas() << std::endl;
+//        std::cout << hare.dimensionFilas() << std::endl;
+//        hare.multiplicarVectoresDameMatriz(pepe, pepa);
+//        hare.mostrar();
+//        std::cout << "---------------------------" << std::endl;
+//        hare.multiplicarEscalar(2.0);
+//        hare.mostrar();
+//        std::cout << "---------------------------" << std::endl;
+//        std::vector<double> pepe1;
+//        std::vector<double> pepa1;
+//        for (int i = 0; i < 4; ++i){
+//          pepe1.push_back(i);
+//          pepa1.push_back(i);
+//        }
+//        Matriz hare2(4, 4);
+//        hare.multiplicarVectoresDameMatriz(pepe1, pepa1);
+//        hare.menos(hare2);
+//        hare.mostrar();
+//        
+//
+//        return 0;
+//}
   /*
   std::cout << "Matriz this:" << std::endl;
   std::cout << "filas: " << this->filas << std::endl;
