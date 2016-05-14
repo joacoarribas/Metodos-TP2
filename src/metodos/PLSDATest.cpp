@@ -3,6 +3,7 @@
 #include <time.h>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include "metodoPotencia.cpp"
 
@@ -21,8 +22,8 @@ void normalizar(std::vector<double>& x) {
 	}		
 }
 
-void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensiones) {
-	//revizar imagenes de 1...n, cada uno es vec de m
+void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTrainPLSDA, Matriz& autovectores, int dimensiones, std::ostream& filewrite) {
+
 	long n = imagenes.dimensionFilas();
 	long m = imagenes.dimensionColumnas();
 	double raizN = sqrt((double)n-1.0);
@@ -33,19 +34,16 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
 	//calcular mu = promedio de la suma de todos los vectores
   std::vector<double> promedios(n, 0);
   for (int j = 0; j < m; ++j) {
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i)
 			promedios[j] += imagenes[i][j];
-		}
 
 		promedios[j] /= (double)n; 
 	}
 
 	//X matriz de nXm donde cada fila es traspuesta(x_i − μ)/raiz(n − 1)
-  for (int j = 0; j < m; ++j) {
-    for (int i = 0; i < n; ++i) {
+  for (int j = 0; j < m; ++j)
+    for (int i = 0; i < n; ++i)
 			X[i][j] = (imagenes[i][j] - promedios[j]) / raizN;
-		}
-	}
 
 	//defino preY de nX10 que tiene 1 en preY_i,j si la i-esima muestra de la base corresponde al digito j-1
   //-1 en caso contrario
@@ -63,25 +61,20 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
 	//defino promY de nX1 con promY_i = promedio de la fila i-esima de preY
   std::vector<double> promY(n, 0);
   for (int j = 0; j < 10; ++j) {
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i)
 			promY[j] += preY[i][j];
-		}
+
 		promY[j] /= (double)n; //esto puede traer error
 	}
 
 	//defino Y como preY_i − promY_i / raiz(n-1)
-  for (int j = 0; j < 10; ++j) {
-    for (int i = 0; i < n; ++i) {
+  for (int j = 0; j < 10; ++j)
+    for (int i = 0; i < n; ++i)
 			Y[i][j] = (preY[i][j] - promY[j]) / raizN;
-		}
-	}
-
-  //Matriz w(m, dimensiones); // Solo necesito dimensiones cantidad de autovectores
-  Matriz w(dimensiones, m); // Solo necesito dimensiones cantidad de autovectores
 
   // Tengo dimensiones cantidad de autovectores de tamaño m
 
-	for(int i=0; i<dimensiones; ++i) {
+	for (int i=0; i<dimensiones; ++i) {
 
 		Matriz Xtras(m, n);
     X.trasponer(Xtras);
@@ -101,17 +94,19 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
       Xtrass.multiplicarMatrices(Ytrass, Mi); // Xtrass * Ytrass = X^t * Y * Y^t * X
     }
 
-		//calcular wi el autovector asociado al mayor autovalo de Mi
-		std::vector<double>& wi = w[i]; // Si w = nxm entonces wi = m
-		Matriz::cargarVector(wi);
-    double autovalor = metodoPotencia(Mi, wi); //descarto el autovalor que vino, solo necesito el auvector en wi
+		//calcular el autovector asociado al mayor autovalo de Mi
+		std::vector<double>& autovector = autovectores[i]; // Si w = nxm entonces wi = m
+		Matriz::cargarVector(autovector);
 
-		//normalizar wi con norma 2
-		normalizar(wi);
+    double autovalor = metodoPotencia(Mi, autovector); //descarto el autovalor que vino, solo necesito el auvector en wi
+    filewrite << std::scientific << autovalor << std::endl;
+
+		//normalizar autovector con norma 2
+		normalizar(autovector);
 		
 		//ti = X * wi
 		std::vector<double> ti(n, 0);
-    X.multiplicarVectorDer(wi, ti); // x = nxm y wi = mx1 entonces ti = nx1; 
+    X.multiplicarVectorDer(autovector, ti); // x = nxm y wi = mx1 entonces ti = nx1; 
 		
 		//normalizar ti con norma 2
 		normalizar(ti);
@@ -140,7 +135,7 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
   // Los autovectores estan como FILAS de la matriz w. Para multiplicarla por imagenes tengo que trasponerla
   
   Matriz wTras(m, dimensiones);
-  w.trasponer(wTras);
+  autovectores.trasponer(wTras);
 
   //w.mostrar();
   //std::cout << "-----------------------------------------" << std::endl;
@@ -152,7 +147,8 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTransformadas, int dimensione
   //wTras.mostrar2();
   //std::cout << "-----------------------------------------" << std::endl;
 
-  imagenes.multiplicarMatrices(wTras, imagenesTransformadas); // Esto es la transformación caracteritisca
+  imagenes.multiplicarMatrices(wTras, imagenesTrainPLSDA); // Esto es la transformación caracteritisca
+
 }
 
 
