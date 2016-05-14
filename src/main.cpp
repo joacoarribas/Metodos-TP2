@@ -429,11 +429,8 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos, std::ofstream&
 
 /* Termina Knn */
 
-int evaluarTests(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, int method) {
+void evaluarTests(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, int method, int vecinos, int componentes, int dimensiones, int particiones) {
 
-
-
-  init_time();
   std::string lineData;
   std::string lineTest;
   std::string lineTrain;
@@ -448,32 +445,6 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, std::stri
   std::string path;
   std::string train;
   std::string test;
-  int vecinos;
-  int componentes;
-  int dimensiones;
-  int particiones;
-
-  int varAModificar;
-  std::cout << "¿Cuántas variables querés modificar, 1 o 2?" << std::endl;
-  std::cin << varAModificar;
-
-  if (varAModificar == 1) {
-    std::cout << "¿Que variable queres modificar?" << std::endl;
-    std::cout << "1: vecinos" << std::endl;
-    std::cout << "2: componentes" << std::endl;
-    std::cout << "3: dimensiones" << std::endl;
-  
-  }
-
-  std::cout << "¿Que variables queres modificar?" << std::endl;
-  std::cout << "1: vecinos" << std::endl;
-  
-
-  issData >> path;
-  //issData >> vecinos;
-  //issData >> componentes;
-  //issData >> dimensiones;
-  //issData >> particiones;
 
   train = path.append("train.csv"); 
   test = path.append("test.csv"); 
@@ -637,7 +608,82 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, std::stri
 
   acum += get_time();
   std::cout << std::fixed << acum << std::endl;
+}
 
+int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, int method) {
+  
+  init_time();
+ 
+  std::string lineData;
+  std::string lineTest;
+  std::string lineTrain;
+  std::ifstream fileData (fileTestData.c_str());
+  std::ofstream fileWrite (fileTestResult.c_str());
+  std::ofstream fileWrite2 (fileEstadisticas.c_str());
+  int z = 0;
+
+  getline(fileData, lineData); // Pido primer línea para instanciar todo
+  std::istringstream issData(lineData);
+
+  std::string path;
+  std::string train;
+  std::string test;
+  
+  std::vector<int> vecinos(2, 0);
+  std::vector<int> componentes(2, 0);
+  std::vector<int> dimensiones(2, 0);
+  std::vector<int> particiones(2, 0);
+
+  int varAModificar;
+  std::cout << "¿queres modifcar variables o sar por defecto?" << std::endl;
+  std::cout << "1: modificar" << std::endl;
+  std::cout << "2: por defecto" << std::endl;
+  std::cin >> varAModificar;  
+   
+  issData >> path;
+  
+  if (varAModificar == 1) {
+    std::cout << "ingrese el rango de vecinos (el intervalo es cerrado)" << std::endl;
+    std::cout << "Inicio: ";
+    std::cin >> vecinos[0];
+    std::cout << "Fin: ";
+    std::cin >> vecinos[1];
+
+    std::cout << "ingrese el rango de las componentes (el intervalo es cerrado)" << std::endl;
+    std::cout << "Inicio: ";
+    std::cin >> componentes[0];
+    std::cout << "Fin: ";
+    std::cin >> componentes[1];
+
+    std::cout << "ingrese el rango de las dimensiones (el intervalo es cerrado)" << std::endl;
+    std::cout << "Inicio: ";
+    std::cin >> dimensiones[0];
+    std::cout << "Fin: ";
+    std::cin >> dimensiones[1];
+
+    std::cout << "ingrese el rango de las particiones para cross folding (el intervalo es cerrado)" << std::endl;
+    std::cout << "Inicio: ";
+    std::cin >> particiones[0];
+    std::cout << "Fin: ";
+    std::cin >> particiones[1];
+
+    for (int vec = vecinos[0]; vec <= vecinos[1]; ++vec) {  
+      for (int comp = componentes[0]; comp <= componentes[1]; ++comp) {
+        for (int dim = dimensiones[0]; dim <= dimensiones[1]; ++dim) {
+          for (int part = particiones[0]; part <= particiones[1]; ++part) {
+            evaluarTests(fileTestData, fileTestResult, fileEstadisticas, method, vec, comp, dim, part);
+          }
+        }
+      }
+    }
+
+  } else {
+    issData >> vecinos[0];
+    issData >> componentes[0];
+    issData >> dimensiones[0];
+    issData >> particiones[0];
+    evaluarTests(fileTestData, fileTestResult, fileEstadisticas, method, vecinos[0], componentes[0], dimensiones[0], particiones[0]);
+  }
   return 0;
 }
 
@@ -651,7 +697,7 @@ int main(int argc, char** argv) {
   // El segundo en el cual evaluo si los resultados fueron correctos
   // El tercero el método a realizar (0 KNN, 1 PCC+KNN, 2 PLS-DA+KNN)
 
-  evaluarTests(fileTestData, fileTestResult, fileTestEstadisticas, method);
+  elegirOpciones(fileTestData, fileTestResult, fileTestEstadisticas, method);
 
   return 0;
 }
