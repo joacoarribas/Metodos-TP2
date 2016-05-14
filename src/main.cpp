@@ -178,7 +178,7 @@ void calcular_matriz_X(Matriz& matriz, Matriz& res){
 
 /* Empieza PCA */
 
-void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alfa){ //deja en matriz_ortonormal una matriz de alfa columnas
+void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alfa, std::ofstream& filewrite){ //deja en matriz_ortonormal una matriz de alfa columnas
   int m = matriz_ortonormal.dimensionColumnas();
 
   for (int i = 0; i < alfa; ++i) { //repito alfa veces (hay que experimentar con dicho valor)
@@ -187,15 +187,14 @@ void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alf
 
     Matriz::cargarVector(aux);
 
-
     double autovalor = metodoPotencia(matriz, aux); //calculo el i-ésimo autovalor, en aux queda el autovector
-    std::cout << "autovalor: " << i << " vale: " << std::scientific << autovalor << std::endl;
+    filewrite << std::scientific << autovalor << std::endl;
 
     normalizar(aux);
 
     /* Deflación */
     Matriz auxiliar(m, m);
-    //
+
     vector<double> aux2(m, 0);
 
     for (int i = 0; i < m; ++i) {
@@ -203,7 +202,6 @@ void calcular_base_ortonormal(Matriz& matriz, Matriz& matriz_ortonormal, int alf
     }
 
     auxiliar.multiplicarVectoresDameMatriz(aux, aux2);
-    //auxiliar.multiplicarEscalar(autovalor);
     matriz.menos(auxiliar);
 
   } 
@@ -222,21 +220,10 @@ void PCAMethod(Matriz& matriz, Matriz& res, Matriz& m_ortonormal, int alfa, std:
 
   Matriz m_covarianza(m, m); //revisar dimensiones
 
-  std::cout << "antes de entrar a multiplicar" << std::endl;
   Xt.multiplicarMatrices(X, m_covarianza); //crear matriz covarianza
-  std::cout << "after" << std::endl;
-
-  //for (int i = 0; i < m; ++i) { 
-  //  for (int j = 0; j < m; ++j) {
-  //    if (!igualdadConTolerancia(m_covarianza[i][j], 0)) {
-  //      std::cout << "fila " << i << " columna " << j << std::endl;
-  //      std::cout << m_covarianza[i][j] << std::endl;
-  //    }
-  //  }
-  //}
 
   /* Reducción de la dimensión */
-  calcular_base_ortonormal(m_covarianza, m_ortonormal, alfa); //deja en matriz_ortonormal una matriz de alfa filas
+  calcular_base_ortonormal(m_covarianza, m_ortonormal, alfa, filewrite); //deja en matriz_ortonormal una matriz de alfa filas
 
   /* Transformación característica */
   Matriz m_ortonormal_traspuesta(m, alfa);
@@ -444,6 +431,8 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos, std::ofstream&
 
 int evaluarTests(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, int method) {
 
+
+
   init_time();
   std::string lineData;
   std::string lineTest;
@@ -464,11 +453,27 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, std::stri
   int dimensiones;
   int particiones;
 
+  int varAModificar;
+  std::cout << "¿Cuántas variables querés modificar, 1 o 2?" << std::endl;
+  std::cin << varAModificar;
+
+  if (varAModificar == 1) {
+    std::cout << "¿Que variable queres modificar?" << std::endl;
+    std::cout << "1: vecinos" << std::endl;
+    std::cout << "2: componentes" << std::endl;
+    std::cout << "3: dimensiones" << std::endl;
+  
+  }
+
+  std::cout << "¿Que variables queres modificar?" << std::endl;
+  std::cout << "1: vecinos" << std::endl;
+  
+
   issData >> path;
-  issData >> vecinos;
-  issData >> componentes;
-  issData >> dimensiones;
-  issData >> particiones;
+  //issData >> vecinos;
+  //issData >> componentes;
+  //issData >> dimensiones;
+  //issData >> particiones;
 
   train = path.append("train.csv"); 
   test = path.append("test.csv"); 
@@ -579,8 +584,8 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, std::stri
     // isTrain tiene para cada imagen (de 0 a cantImagenesTotales) si es parte del train o no
 
 
-      Matriz autovectoresPCA(componentes, tamImagen);
-      Matriz autovectoresPLSDA(dimensiones, tamImagen);
+    Matriz autovectoresPCA(componentes, tamImagen);
+    Matriz autovectoresPLSDA(dimensiones, tamImagen);
     if (method == 1) {
       PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileWrite);
     } else {
@@ -601,13 +606,13 @@ int evaluarTests(std::string fileTestData, std::string fileTestResult, std::stri
 
       case 1: { // Método KNN+PCA
 
-        Matriz wTras(tamImagen, componentes);
-        autovectoresPLSDA.trasponer(wTras);
+          Matriz wTras(tamImagen, componentes);
+          autovectoresPCA.trasponer(wTras);
 
-        imagenesTest.multiplicarMatrices(wTras, imagenesTestPCA);
+          imagenesTest.multiplicarMatrices(wTras, imagenesTestPCA);
 
-        KNN(imagenesTrainPCA, imagenesTestPCA, vecinos, fileWrite2);
-              
+          KNN(imagenesTrainPCA, imagenesTestPCA, vecinos, fileWrite2);
+                
           break;
         }
 
