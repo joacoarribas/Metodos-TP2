@@ -560,8 +560,9 @@ void evaluarTests(std::string fileTestData, std::string fileTestResult, std::str
     if (method == 1) {
       PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileWrite);
     } else {
-
-      PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileWrite); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarlo
+	std::cout << "entre aca | dimensiones -> " << dimensiones << std::endl; 
+      PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileWrite); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarloi
+	std::cout << "sali ah reee" << std::endl;
     }
     
     fileWrite2 << "Iteración: " << z << std::endl;
@@ -629,10 +630,10 @@ int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::st
   std::string train;
   std::string test;
   
-  std::vector<int> vecinos(2, 0);
-  std::vector<int> componentes(2, 0);
-  std::vector<int> dimensiones(2, 0);
-  std::vector<int> particiones(2, 0);
+  std::vector<int> vecinos(3, 0);
+  std::vector<int> componentes(3, 0);
+  std::vector<int> dimensiones(3, 0);
+  std::vector<int> particiones(3, 0);
 
   int varAModificar;
   std::cout << "¿queres modifcar variables o sar por defecto?" << std::endl;
@@ -648,29 +649,37 @@ int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::st
     std::cin >> vecinos[0];
     std::cout << "Fin: ";
     std::cin >> vecinos[1];
+    std::cout << "Step: ";
+    std::cin >> vecinos[2];
 
     std::cout << "ingrese el rango de las componentes (el intervalo es cerrado)" << std::endl;
     std::cout << "Inicio: ";
     std::cin >> componentes[0];
     std::cout << "Fin: ";
     std::cin >> componentes[1];
+    std::cout << "Step: ";
+    std::cin >> componentes[2];
 
     std::cout << "ingrese el rango de las dimensiones (el intervalo es cerrado)" << std::endl;
     std::cout << "Inicio: ";
     std::cin >> dimensiones[0];
     std::cout << "Fin: ";
     std::cin >> dimensiones[1];
+    std::cout << "Step: ";
+    std::cin >> dimensiones[2];
 
     std::cout << "ingrese el rango de las particiones para cross folding (el intervalo es cerrado)" << std::endl;
     std::cout << "Inicio: ";
     std::cin >> particiones[0];
     std::cout << "Fin: ";
     std::cin >> particiones[1];
+    std::cout << "Step: ";
+    std::cin >> particiones[2];
 
-    for (int vec = vecinos[0]; vec <= vecinos[1]; ++vec) {  
-      for (int comp = componentes[0]; comp <= componentes[1]; ++comp) {
-        for (int dim = dimensiones[0]; dim <= dimensiones[1]; ++dim) {
-          for (int part = particiones[0]; part <= particiones[1]; ++part) {
+    for (int vec = vecinos[0]; vec <= vecinos[1]; vec+=vecinos[2]) {  
+      for (int comp = componentes[0]; comp <= componentes[1]; comp+=componentes[2]) {
+        for (int dim = dimensiones[0]; dim <= dimensiones[1]; dim+=dimensiones[2]) {
+          for (int part = particiones[0]; part <= particiones[1]; part+=particiones[2]) {
             evaluarTests(fileTestData, fileTestResult, fileEstadisticas, method, vec, comp, dim, part);
           }
         }
