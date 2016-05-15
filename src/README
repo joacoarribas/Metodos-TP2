@@ -17,3 +17,36 @@ donde opcion puede ser:
 	test
 		hace el build, busca lo archivos *.in en la carpeta tests/, ejecuta el programa y guarda el
 		resultado para cada corrida en el correspondiente .out. Despues, chequea que el resultado sea el "mismo" que el .expected, tambien del directorio test. En este caso, la comparacion es por tolerancia coordenada a coordeanda del vector solucion.
+
+
+COMO CORRER EL MAIN
+
+parametros:
+
+1) Archivo de entrada. Los tests
+2) Archivo de salida para autovalores
+3) Archivo de salida para las estadísticas generales (incluye tiempo de corrida)
+4) Archivo de salida para las precisiones.
+5) Archivo de salida para las recalls.
+6) Archivo de salida para las F1.
+7) Archivo de salida para el Hit Rate.
+8) El método. (0 KNN 1 PCA 2 PLSDA)
+
+Notas:
+
+1) En caso de querer correr exclusivamente KNN hace falta modificar el código para 
+que no ejecute antes PCA y PLSDA (agregar un if cuando pregunta por el método, antes del switch)
+
+2) El archivo de salida de precisiones y recalls tiene 11 lineas por cada iteracion.
+1 por cada clase y la última con el promedio de todas.
+
+3) F1 y HitRate tienen una única línea por iteración. 
+
+4) Para cada experimento que corran es recomendable crear una carpeta dentro de "resultados".
+De esta manera cada carpeta tiene exclusivamente sus archivos (dado que cada vez que se ejecuta algo
+escupe 5 archivos, va a ser un quilombo no tenerlo archivado así).
+
+Ejemplo para correr el main: 
+
+./main tests/test1.in autovalores.tex resultados/mi_carpeta/estadisticas.tex resultados/mi_carpeta/precisiones.tex 
+resultados/mi_carpeta/recalls.tex resultados/mi_carpeta/F1.tex resultados/mi_carpeta/hitRate.tex 2 (esto corre PLSDA)

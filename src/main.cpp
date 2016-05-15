@@ -32,7 +32,7 @@ double get_time() {
 
 /* Empieza Auxiliares estadística */
 
-void calcularEstadisticas(Matriz& imagenes, std::ostream& fEstadisticas) {
+void calcularEstadisticas(Matriz& imagenes, std::ofstream& fEstadisticas, std::ofstream& fEstPrecision, std::ofstream& fEstRecall, std::ofstream& fEstF1) {
   std::vector<int> tp(10, 0);
   std::vector<int> fp(10, 0);
   std::vector<int> fn(10, 0);
@@ -71,12 +71,14 @@ void calcularEstadisticas(Matriz& imagenes, std::ostream& fEstadisticas) {
   double precision = 0;
   for (int i = 0; i < 10; ++i) {
     fEstadisticas << "Precisión clase " << i << ": " << std::fixed << precisiones[i] << std::endl; 
+    fEstPrecision << std::fixed << precisiones[i] << std::endl;
     precision += precisiones[i];
   }
 
   precision /= 10.0;
 
   fEstadisticas << "Precisión categorizador: " << std::fixed << precision << std::endl; 
+  fEstPrecision << std::fixed << precision << std::endl;
 
   fEstadisticas << "-----------------------------------------" << std::endl;
   fEstadisticas << "Cálculo recall: " << std::endl;
@@ -84,16 +86,19 @@ void calcularEstadisticas(Matriz& imagenes, std::ostream& fEstadisticas) {
   double recall = 0;
   for (int i = 0; i < 10; ++i) {
     fEstadisticas << "Recall clase " << i << ": " << std::fixed << recalls[i] << std::endl; 
+    fEstRecall << std::fixed << recalls[i] << std::endl;
     recall += recalls[i];
   }
 
   recall /= 10.0;
 
   fEstadisticas << "Recall categorizador: " << std::fixed << recall << std::endl; 
+  fEstRecall << std::fixed << recall << std::endl;
 
   double F1 = (2 * precision * recall) / (precision + recall);
 
   fEstadisticas << "F1: " << std::fixed << F1 << std::endl; 
+  fEstF1 << std::fixed << F1 << std::endl;
   fEstadisticas << "-----------------------------------------" << std::endl;
   fEstadisticas << "-----------------------------------------" << std::endl;
 
@@ -316,6 +321,7 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTrainPLSDA, Matriz& autovecto
 
     double autovalor = metodoPotencia(Mi, autovector); //descarto el autovalor que vino, solo necesito el auvector en wi
     filewrite << std::scientific << autovalor << std::endl;
+    std::cout << std::scientific << autovalor << std::endl;
 
 		//normalizar autovector con norma 2
 		normalizar(autovector);
@@ -343,6 +349,8 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTrainPLSDA, Matriz& autovecto
     nY.multiplicarVectoresDameMatriz(ti, tiY); // nX = ti * tii = ti * ti^t * X
 
     Y.menos(nY); // Termino de actualizar X
+    std::cout << "iteracion: " << i+1 << " de " << dimensiones << std::endl;
+    std::cout << std::endl;
 	}
 
   // Los autovectores estan como FILAS de la matriz w. Para multiplicarla por imagenes tengo que trasponerla
@@ -391,37 +399,33 @@ int dameEtiquetaEstimada(Matriz& imagenesTrain, std::vector<double>& imagen, int
  
 }
 
-int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos, std::ofstream& fEstadisticas) {
+int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos,
+    std::ofstream& fEstadisticas, std::ofstream& fEstPresicion,
+    std::ofstream& fEstRecall, std::ofstream& fEstF1, std::ofstream& fEstHitRate) {
+
+  std::cout << "entro knn" << std::endl;
 
   int filas = imagenesTest.dimensionFilas();
   int hitRate = 0;
 
-  //std::cout << "----------------------------------------------------------" << std::endl;
-  //imagenesTrain.mostrar2();
-  //std::cout << "----------------------------------------------------------" << std::endl;
-  //imagenesTest.mostrar2();
-  //std::cout << "----------------------------------------------------------" << std::endl;
-  
   for (int i = 0; i < filas; ++i) {
 
     int etiqueta = dameEtiquetaEstimada(imagenesTrain, imagenesTest[i], vecinos); // Le asigna a qué número pertenece la i-ésima imagen de imagenesTest
     imagenesTest.estimar(i, etiqueta); // En matriz.estimar tengo lo que supongo que es la imagen. En matriz.etiqueta tengo lo que de verdad es
 
- /*   
-    std::cout << "la etiqueta de la imagen " << i << " es " << imagenesTest.dameEtiqueta(i) << std::endl;
-    std::cout << "su estimación fue: " << imagenesTest.dameEstimacion(i) << std::endl;
-
-    std::cout << "etiqueta: " << imagenesTest.dameEtiqueta(i) << std::endl;
-    std::cout << "estimación: " << imagenesTest.dameEstimacion(i) << std::endl;
-  */
     if (etiqueta == imagenesTest.dameEtiqueta(i))
       hitRate++;
   }
 
+  std::cout << "termino knn" << std::endl;
   fEstadisticas << "cantidad de imagenes Test: " << filas << std::endl;
   fEstadisticas << "cantidad de aciertos (Hit Rate): " << hitRate << std::endl;
+  fEstHitRate << hitRate << std::endl;
+  acum += get_time();
+  fEstadisticas << "tiempo: " << acum << std::endl;
+  acum = 0;
 
-  calcularEstadisticas(imagenesTest, fEstadisticas);
+  calcularEstadisticas(imagenesTest, fEstadisticas, fEstPresicion, fEstRecall, fEstF1);
 
   return hitRate; // Esto no sé si es necesario aún
 
@@ -429,20 +433,17 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos, std::ofstream&
 
 /* Termina Knn */
 
-void evaluarTests(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, int method, int vecinos, int componentes, int dimensiones, int particiones) {
+void evaluarTests(std::string fileTestData, std::ofstream& fileTestResult, std::ofstream& fileEstadisticas, std::ofstream& fEstPrecision, std::ofstream& fEstRecall, std::ofstream& fEstF1, std::ofstream& fEstHitRate, std::string path, int method, int vecinos, int componentes, int dimensiones, int particiones) {
 
   std::string lineData;
   std::string lineTest;
   std::string lineTrain;
   std::ifstream fileData (fileTestData.c_str());
-  std::ofstream fileWrite (fileTestResult.c_str());
-  std::ofstream fileWrite2 (fileEstadisticas.c_str());
   int z = 0;
 
   getline(fileData, lineData); // Pido primer línea para instanciar todo
   std::istringstream issData(lineData);
 
-  std::string path;
   std::string train;
   std::string test;
 
@@ -557,20 +558,26 @@ void evaluarTests(std::string fileTestData, std::string fileTestResult, std::str
 
     Matriz autovectoresPCA(componentes, tamImagen);
     Matriz autovectoresPLSDA(dimensiones, tamImagen);
+    init_time();
+ 
     if (method == 1) {
-      PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileWrite);
+      PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileTestResult);
     } else {
 	std::cout << "entre aca | dimensiones -> " << dimensiones << std::endl; 
-      PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileWrite); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarloi
+      PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileTestResult); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarloi
 	std::cout << "sali ah reee" << std::endl;
     }
     
-    fileWrite2 << "Iteración: " << z << std::endl;
+    fileEstadisticas << "Iteración: " << z << std::endl;
+    fileEstadisticas << "Vecinos: " << vecinos << std::endl;
+    fileEstadisticas << "dimensiones: " << dimensiones << std::endl;
+    fileEstadisticas << "componentes: " << componentes << std::endl;
+    fileEstadisticas << "particiones: " << particiones << std::endl;
 
     switch(method) {
       case 0: { // Método KNN
 
-          KNN(imagenesTrain, imagenesTest, vecinos, fileWrite2);
+          KNN(imagenesTrain, imagenesTest, vecinos, fileEstadisticas, fEstPrecision, fEstRecall, fEstF1, fEstHitRate);
 
           break;
               
@@ -583,7 +590,7 @@ void evaluarTests(std::string fileTestData, std::string fileTestResult, std::str
 
           imagenesTest.multiplicarMatrices(wTras, imagenesTestPCA);
 
-          KNN(imagenesTrainPCA, imagenesTestPCA, vecinos, fileWrite2);
+          KNN(imagenesTrainPCA, imagenesTestPCA, vecinos, fileEstadisticas, fEstPrecision, fEstRecall, fEstF1, fEstHitRate);
                 
           break;
         }
@@ -595,7 +602,7 @@ void evaluarTests(std::string fileTestData, std::string fileTestResult, std::str
 
         imagenesTest.multiplicarMatrices(wTras, imagenesTestPLSDA);
 
-        KNN(imagenesTrainPLSDA, imagenesTestPLSDA, vecinos, fileWrite2);
+        KNN(imagenesTrainPLSDA, imagenesTestPLSDA, vecinos, fileEstadisticas, fEstPrecision, fEstRecall, fEstF1, fEstHitRate);
         break;
 
         }
@@ -611,16 +618,18 @@ void evaluarTests(std::string fileTestData, std::string fileTestResult, std::str
   std::cout << std::fixed << acum << std::endl;
 }
 
-int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, int method) {
+int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, std::string filePrecision, std::string fileRecall, std::string fileF1, std::string fileHitRate, int method) {
   
-  init_time();
- 
   std::string lineData;
   std::string lineTest;
   std::string lineTrain;
   std::ifstream fileData (fileTestData.c_str());
   std::ofstream fileWrite (fileTestResult.c_str());
   std::ofstream fileWrite2 (fileEstadisticas.c_str());
+  std::ofstream fileWrite3 (filePrecision.c_str());
+  std::ofstream fileWrite4 (fileRecall.c_str());
+  std::ofstream fileWrite5 (fileF1.c_str());
+  std::ofstream fileWrite6 (fileHitRate.c_str());
   int z = 0;
 
   getline(fileData, lineData); // Pido primer línea para instanciar todo
@@ -680,7 +689,7 @@ int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::st
       for (int comp = componentes[0]; comp <= componentes[1]; comp+=componentes[2]) {
         for (int dim = dimensiones[0]; dim <= dimensiones[1]; dim+=dimensiones[2]) {
           for (int part = particiones[0]; part <= particiones[1]; part+=particiones[2]) {
-            evaluarTests(fileTestData, fileTestResult, fileEstadisticas, method, vec, comp, dim, part);
+            evaluarTests(fileTestData, fileWrite, fileWrite2, fileWrite3, fileWrite4, fileWrite5, fileWrite6, path, method, vec, comp, dim, part);
           }
         }
       }
@@ -691,7 +700,7 @@ int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::st
     issData >> componentes[0];
     issData >> dimensiones[0];
     issData >> particiones[0];
-    evaluarTests(fileTestData, fileTestResult, fileEstadisticas, method, vecinos[0], componentes[0], dimensiones[0], particiones[0]);
+    evaluarTests(fileTestData, fileWrite, fileWrite2, fileWrite3, fileWrite4, fileWrite5, fileWrite6, path, method, vecinos[0], componentes[0], dimensiones[0], particiones[0]);
   }
   return 0;
 }
@@ -700,13 +709,17 @@ int main(int argc, char** argv) {
   std::string fileTestData(argv[1]);
   std::string fileTestResult(argv[2]);
   std::string fileTestEstadisticas(argv[3]);
-  int method(atoi(argv[4]));
+  std::string fileTestPrecision(argv[4]);
+  std::string fileTestRecall(argv[5]);
+  std::string fileTestF1(argv[6]);
+  std::string fileTestHitRate(argv[7]);
+  int method(atoi(argv[8]));
   // Recibo por parametro tres archivos
   // El primero del cual leo los datos a evaluar
   // El segundo en el cual evaluo si los resultados fueron correctos
   // El tercero el método a realizar (0 KNN, 1 PCC+KNN, 2 PLS-DA+KNN)
 
-  elegirOpciones(fileTestData, fileTestResult, fileTestEstadisticas, method);
+  elegirOpciones(fileTestData, fileTestResult, fileTestEstadisticas, fileTestPrecision, fileTestRecall, fileTestF1, fileTestHitRate, method);
 
   return 0;
 }
