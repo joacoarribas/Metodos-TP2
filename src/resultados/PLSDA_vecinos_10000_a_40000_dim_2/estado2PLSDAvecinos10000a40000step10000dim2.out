@@ -1,0 +1,79 @@
+Iteración: 0
+Vecinos: 10000
+dimensiones: 2
+componentes: 50
+particiones: 1
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 1870
+tiempo: 27642.8
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.676647
+Precisión clase 1: 0.698083
+Precisión clase 2: -nan
+Precisión clase 3: 0.412598
+Precisión clase 4: 0.379653
+Precisión clase 5: -nan
+Precisión clase 6: 0.302932
+Precisión clase 7: 0.420977
+Precisión clase 8: 0.267399
+Precisión clase 9: 0.301676
+Precisión categorizador: -nan
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.834975
+Recall clase 1: 0.984234
+Recall clase 2: 0.000000
+Recall clase 3: 0.574561
+Recall clase 4: 0.385390
+Recall clase 5: 0.000000
+Recall clase 6: 0.457002
+Recall clase 7: 0.651111
+Recall clase 8: 0.360494
+Recall clase 9: 0.130751
+Recall categorizador: 0.437852
+F1: -nan
+-----------------------------------------
+-----------------------------------------
+Iteración: 1
+Vecinos: 10000
+dimensiones: 2
+componentes: 50
+particiones: 1
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 1859
+tiempo: 27134.302649
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.690476
+Precisión clase 1: 0.709924
+Precisión clase 2: -nan
+Precisión clase 3: 0.413629
+Precisión clase 4: 0.351598
+Precisión clase 5: -nan
+Precisión clase 6: 0.309969
+Precisión clase 7: 0.390244
+Precisión clase 8: 0.275797
+Precisión clase 9: 0.295775
+Precisión categorizador: -nan
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.813776
+Recall clase 1: 0.987261
+Recall clase 2: 0.000000
+Recall clase 3: 0.582589
+Recall clase 4: 0.385965
+Recall clase 5: 0.000000
+Recall clase 6: 0.470449
+Recall clase 7: 0.605791
+Recall clase 8: 0.362069
+Recall clase 9: 0.097902
+Recall categorizador: 0.430580
+F1: -nan
+-----------------------------------------
+-----------------------------------------
+Iteración: 2
+Vecinos: 10000
+dimensiones: 2
+componentes: 50
+particiones: 1
