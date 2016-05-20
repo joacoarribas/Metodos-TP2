@@ -1,0 +1,634 @@
+Iteración: 0
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3902
+tiempo: 4134.53
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.952719
+Precisión clase 1: 0.823420
+Precisión clase 2: 0.986486
+Precisión clase 3: 0.930958
+Precisión clase 4: 0.968170
+Precisión clase 5: 0.947917
+Precisión clase 6: 0.949640
+Precisión clase 7: 0.930649
+Precisión clase 8: 0.977011
+Precisión clase 9: 0.876957
+Precisión categorizador: 0.934393
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.992611
+Recall clase 1: 0.997748
+Recall clase 2: 0.871122
+Recall clase 3: 0.916667
+Recall clase 4: 0.919395
+Recall clase 5: 0.903226
+Recall clase 6: 0.972973
+Recall clase 7: 0.924444
+Recall clase 8: 0.839506
+Recall clase 9: 0.949153
+Recall categorizador: 0.928684
+F1: 0.931530
+-----------------------------------------
+-----------------------------------------
+Iteración: 1
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3956
+tiempo: 4195.403467
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.967419
+Precisión clase 1: 0.874296
+Precisión clase 2: 0.979434
+Precisión clase 3: 0.937360
+Precisión clase 4: 0.962865
+Precisión clase 5: 0.963585
+Precisión clase 6: 0.960094
+Precisión clase 7: 0.953333
+Precisión clase 8: 0.980609
+Precisión clase 9: 0.878525
+Precisión categorizador: 0.945752
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.984694
+Recall clase 1: 0.989384
+Recall clase 2: 0.920290
+Recall clase 3: 0.935268
+Recall clase 4: 0.909774
+Recall clase 5: 0.932249
+Recall clase 6: 0.966903
+Recall clase 7: 0.955457
+Recall clase 8: 0.871921
+Recall clase 9: 0.944056
+Recall categorizador: 0.941000
+F1: 0.943370
+-----------------------------------------
+-----------------------------------------
+Iteración: 2
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3912
+tiempo: 4162.228681
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.953125
+Precisión clase 1: 0.856624
+Precisión clase 2: 0.989218
+Precisión clase 3: 0.927928
+Precisión clase 4: 0.976064
+Precisión clase 5: 0.932945
+Precisión clase 6: 0.951613
+Precisión clase 7: 0.917431
+Precisión clase 8: 0.973607
+Precisión clase 9: 0.881579
+Precisión categorizador: 0.936013
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.983871
+Recall clase 1: 0.995781
+Recall clase 2: 0.863529
+Recall clase 3: 0.938497
+Recall clase 4: 0.929114
+Recall clase 5: 0.922190
+Recall clase 6: 0.964953
+Recall clase 7: 0.956938
+Recall clase 8: 0.813725
+Recall clase 9: 0.930556
+Recall categorizador: 0.929915
+F1: 0.932954
+-----------------------------------------
+-----------------------------------------
+Iteración: 3
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3912
+tiempo: 4194.333429
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.943627
+Precisión clase 1: 0.834879
+Precisión clase 2: 0.985994
+Precisión clase 3: 0.946860
+Precisión clase 4: 0.968059
+Precisión clase 5: 0.948320
+Precisión clase 6: 0.950820
+Precisión clase 7: 0.936441
+Precisión clase 8: 0.965418
+Precisión clase 9: 0.880090
+Precisión categorizador: 0.936051
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.984655
+Recall clase 1: 0.995575
+Recall clase 2: 0.850242
+Recall clase 3: 0.926714
+Recall clase 4: 0.907834
+Recall clase 5: 0.938619
+Recall clase 6: 0.971292
+Recall clase 7: 0.928571
+Recall clase 8: 0.872396
+Recall clase 9: 0.932854
+Recall categorizador: 0.930875
+F1: 0.933456
+-----------------------------------------
+-----------------------------------------
+Iteración: 4
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3890
+tiempo: 4162.832037
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.940000
+Precisión clase 1: 0.857965
+Precisión clase 2: 0.976744
+Precisión clase 3: 0.930716
+Precisión clase 4: 0.975728
+Precisión clase 5: 0.915842
+Precisión clase 6: 0.947368
+Precisión clase 7: 0.915332
+Precisión clase 8: 0.977778
+Precisión clase 9: 0.861991
+Precisión categorizador: 0.929946
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.983721
+Recall clase 1: 0.986755
+Recall clase 2: 0.879070
+Recall clase 3: 0.920091
+Recall clase 4: 0.897321
+Recall clase 5: 0.925000
+Recall clase 6: 0.984375
+Recall clase 7: 0.934579
+Recall clase 8: 0.804178
+Recall clase 9: 0.938424
+Recall categorizador: 0.925351
+F1: 0.927643
+-----------------------------------------
+-----------------------------------------
+Iteración: 5
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3914
+tiempo: 4196.402603
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.944578
+Precisión clase 1: 0.850909
+Precisión clase 2: 0.987013
+Precisión clase 3: 0.901345
+Precisión clase 4: 0.970443
+Precisión clase 5: 0.953552
+Precisión clase 6: 0.957346
+Precisión clase 7: 0.932203
+Precisión clase 8: 0.979228
+Precisión clase 9: 0.891304
+Precisión categorizador: 0.936792
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.984925
+Recall clase 1: 0.995745
+Recall clase 2: 0.871560
+Recall clase 3: 0.919908
+Recall clase 4: 0.916279
+Recall clase 5: 0.918421
+Recall clase 6: 0.968825
+Recall clase 7: 0.948276
+Recall clase 8: 0.835443
+Recall clase 9: 0.951276
+Recall categorizador: 0.931066
+F1: 0.933920
+-----------------------------------------
+-----------------------------------------
+Iteración: 6
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3916
+tiempo: 4125.710810
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.958738
+Precisión clase 1: 0.842202
+Precisión clase 2: 0.985795
+Precisión clase 3: 0.937063
+Precisión clase 4: 0.977273
+Precisión clase 5: 0.941176
+Precisión clase 6: 0.950562
+Precisión clase 7: 0.918750
+Precisión clase 8: 0.981283
+Precisión clase 9: 0.875610
+Precisión categorizador: 0.936845
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.977723
+Recall clase 1: 0.993506
+Recall clase 2: 0.876263
+Recall clase 3: 0.945882
+Recall clase 4: 0.921429
+Recall clase 5: 0.918033
+Recall clase 6: 0.986014
+Recall clase 7: 0.940299
+Recall clase 8: 0.847575
+Recall clase 9: 0.906566
+Recall categorizador: 0.931329
+F1: 0.934079
+-----------------------------------------
+-----------------------------------------
+Iteración: 7
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3936
+tiempo: 4189.821644
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.969767
+Precisión clase 1: 0.845324
+Precisión clase 2: 0.991124
+Precisión clase 3: 0.935867
+Precisión clase 4: 0.977961
+Precisión clase 5: 0.961340
+Precisión clase 6: 0.967254
+Precisión clase 7: 0.925439
+Precisión clase 8: 0.972292
+Precisión clase 9: 0.881057
+Precisión categorizador: 0.942743
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.990499
+Recall clase 1: 0.993658
+Recall clase 2: 0.841709
+Recall clase 3: 0.944844
+Recall clase 4: 0.919689
+Recall clase 5: 0.937186
+Recall clase 6: 0.987147
+Recall clase 7: 0.929515
+Recall clase 8: 0.885321
+Recall clase 9: 0.934579
+Recall categorizador: 0.936415
+F1: 0.939568
+-----------------------------------------
+-----------------------------------------
+Iteración: 8
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3904
+tiempo: 4192.179674
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.953846
+Precisión clase 1: 0.867430
+Precisión clase 2: 0.991848
+Precisión clase 3: 0.927230
+Precisión clase 4: 0.944928
+Precisión clase 5: 0.935933
+Precisión clase 6: 0.940191
+Precisión clase 7: 0.930556
+Precisión clase 8: 0.972067
+Precisión clase 9: 0.876168
+Precisión categorizador: 0.934020
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.984127
+Recall clase 1: 0.996241
+Recall clase 2: 0.894608
+Recall clase 3: 0.914352
+Recall clase 4: 0.903047
+Recall clase 5: 0.893617
+Recall clase 6: 0.975186
+Recall clase 7: 0.926267
+Recall clase 8: 0.836538
+Recall clase 9: 0.944584
+Recall categorizador: 0.926857
+F1: 0.930424
+-----------------------------------------
+-----------------------------------------
+Iteración: 9
+Vecinos: 100
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3901
+tiempo: 4154.897482
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.950820
+Precisión clase 1: 0.833024
+Precisión clase 2: 0.987277
+Precisión clase 3: 0.947494
+Precisión clase 4: 0.958549
+Precisión clase 5: 0.945402
+Precisión clase 6: 0.948430
+Precisión clase 7: 0.902326
+Precisión clase 8: 0.967123
+Precisión clase 9: 0.890380
+Precisión categorizador: 0.933083
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.978313
+Recall clase 1: 0.991170
+Recall clase 2: 0.887872
+Recall clase 3: 0.910550
+Recall clase 4: 0.920398
+Recall clase 5: 0.901370
+Recall clase 6: 0.963554
+Recall clase 7: 0.930456
+Recall clase 8: 0.889169
+Recall clase 9: 0.906606
+Recall categorizador: 0.927946
+F1: 0.930507
+-----------------------------------------
+-----------------------------------------
+Iteración: 0
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3832
+tiempo: 8652.356579
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.947867
+Precisión clase 1: 0.778559
+Precisión clase 2: 0.983287
+Precisión clase 3: 0.918736
+Precisión clase 4: 0.959893
+Precisión clase 5: 0.931579
+Precisión clase 6: 0.946341
+Precisión clase 7: 0.914989
+Precisión clase 8: 0.970674
+Precisión clase 9: 0.852747
+Precisión categorizador: 0.920467
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.985222
+Recall clase 1: 0.997748
+Recall clase 2: 0.842482
+Recall clase 3: 0.892544
+Recall clase 4: 0.904282
+Recall clase 5: 0.878412
+Recall clase 6: 0.953317
+Recall clase 7: 0.908889
+Recall clase 8: 0.817284
+Recall clase 9: 0.939467
+Recall categorizador: 0.911965
+F1: 0.916196
+-----------------------------------------
+-----------------------------------------
+Iteración: 1
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3878
+tiempo: 4443.896123
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.964736
+Precisión clase 1: 0.826855
+Precisión clase 2: 0.978437
+Precisión clase 3: 0.911111
+Precisión clase 4: 0.953804
+Precisión clase 5: 0.956772
+Precisión clase 6: 0.951049
+Precisión clase 7: 0.937639
+Precisión clase 8: 0.974432
+Precisión clase 9: 0.847134
+Precisión categorizador: 0.930197
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.977041
+Recall clase 1: 0.993631
+Recall clase 2: 0.876812
+Recall clase 3: 0.915179
+Recall clase 4: 0.879699
+Recall clase 5: 0.899729
+Recall clase 6: 0.964539
+Recall clase 7: 0.937639
+Recall clase 8: 0.844828
+Recall clase 9: 0.930070
+Recall categorizador: 0.921917
+F1: 0.926038
+-----------------------------------------
+-----------------------------------------
+Iteración: 2
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3828
+tiempo: 4502.654958
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.937916
+Precisión clase 1: 0.808219
+Precisión clase 2: 0.986034
+Precisión clase 3: 0.900000
+Precisión clase 4: 0.975477
+Precisión clase 5: 0.932099
+Precisión clase 6: 0.942396
+Precisión clase 7: 0.889908
+Precisión clase 8: 0.969419
+Precisión clase 9: 0.855011
+Precisión categorizador: 0.919648
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.974654
+Recall clase 1: 0.995781
+Recall clase 2: 0.830588
+Recall clase 3: 0.922551
+Recall clase 4: 0.906329
+Recall clase 5: 0.870317
+Recall clase 6: 0.955607
+Recall clase 7: 0.928230
+Recall clase 8: 0.776961
+Recall clase 9: 0.928241
+Recall categorizador: 0.908926
+F1: 0.914255
+-----------------------------------------
+-----------------------------------------
+Iteración: 3
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3842
+tiempo: 4507.686438
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.938575
+Precisión clase 1: 0.792254
+Precisión clase 2: 0.979651
+Precisión clase 3: 0.928401
+Precisión clase 4: 0.967337
+Precisión clase 5: 0.949602
+Precisión clase 6: 0.948235
+Precisión clase 7: 0.915789
+Precisión clase 8: 0.955621
+Precisión clase 9: 0.846325
+Precisión categorizador: 0.922179
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.976982
+Recall clase 1: 0.995575
+Recall clase 2: 0.814010
+Recall clase 3: 0.919622
+Recall clase 4: 0.887097
+Recall clase 5: 0.915601
+Recall clase 6: 0.964115
+Recall clase 7: 0.913866
+Recall clase 8: 0.841146
+Recall clase 9: 0.911271
+Recall categorizador: 0.913928
+F1: 0.918035
+-----------------------------------------
+-----------------------------------------
+Iteración: 4
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3840
+tiempo: 4518.991086
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.929360
+Precisión clase 1: 0.827778
+Precisión clase 2: 0.978892
+Precisión clase 3: 0.914943
+Precisión clase 4: 0.960976
+Precisión clase 5: 0.920918
+Precisión clase 6: 0.935162
+Precisión clase 7: 0.914550
+Precisión clase 8: 0.983333
+Precisión clase 9: 0.835886
+Precisión categorizador: 0.920180
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.979070
+Recall clase 1: 0.986755
+Recall clase 2: 0.862791
+Recall clase 3: 0.908676
+Recall clase 4: 0.879464
+Recall clase 5: 0.902500
+Recall clase 6: 0.976562
+Recall clase 7: 0.925234
+Recall clase 8: 0.770235
+Recall clase 9: 0.940887
+Recall categorizador: 0.913217
+F1: 0.916685
+-----------------------------------------
+-----------------------------------------
+Iteración: 5
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3832
+tiempo: 4440.280765
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.930622
+Precisión clase 1: 0.789207
+Precisión clase 2: 0.986413
+Precisión clase 3: 0.891892
+Precisión clase 4: 0.952854
+Precisión clase 5: 0.951977
+Precisión clase 6: 0.944976
+Precisión clase 7: 0.926108
+Precisión clase 8: 0.972561
+Precisión clase 9: 0.865385
+Precisión categorizador: 0.921200
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.977387
+Recall clase 1: 0.995745
+Recall clase 2: 0.832569
+Recall clase 3: 0.906178
+Recall clase 4: 0.893023
+Recall clase 5: 0.886842
+Recall clase 6: 0.947242
+Recall clase 7: 0.926108
+Recall clase 8: 0.807595
+Recall clase 9: 0.939675
+Recall categorizador: 0.911236
+F1: 0.916191
+-----------------------------------------
+-----------------------------------------
+Iteración: 6
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
+cantidad de imagenes Test: 4200
+cantidad de aciertos (Hit Rate): 3832
+tiempo: 4529.907038
+-----------------------------------------
+Cálculo precision: 
+Precisión clase 0: 0.944712
+Precisión clase 1: 0.792096
+Precisión clase 2: 0.987915
+Precisión clase 3: 0.913753
+Precisión clase 4: 0.966581
+Precisión clase 5: 0.939481
+Precisión clase 6: 0.945701
+Precisión clase 7: 0.914405
+Precisión clase 8: 0.963687
+Precisión clase 9: 0.833724
+Precisión categorizador: 0.920206
+-----------------------------------------
+Cálculo recall: 
+Recall clase 0: 0.972772
+Recall clase 1: 0.997835
+Recall clase 2: 0.825758
+Recall clase 3: 0.922353
+Recall clase 4: 0.895238
+Recall clase 5: 0.890710
+Recall clase 6: 0.974359
+Recall clase 7: 0.933902
+Recall clase 8: 0.796767
+Recall clase 9: 0.898990
+Recall categorizador: 0.910868
+F1: 0.915513
+-----------------------------------------
+-----------------------------------------
+Iteración: 7
+Vecinos: 200
+dimensiones: 10
+componentes: 50
+particiones: 10
