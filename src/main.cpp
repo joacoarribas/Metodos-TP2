@@ -280,7 +280,7 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTrainPLSDA, Matriz& autovecto
   }
 
 	//defino promY de nX1 con promY_i = promedio de la fila i-esima de preY
-  std::vector<double> promY(n, 0);
+  std::vector<double> promY(10, 0);
   for (int j = 0; j < 10; ++j) {
     for (int i = 0; i < n; ++i)
 			promY[j] += preY[i][j];
@@ -321,7 +321,6 @@ void PLSDAMethod(Matriz& imagenes, Matriz& imagenesTrainPLSDA, Matriz& autovecto
 
     double autovalor = metodoPotencia(Mi, autovector); //descarto el autovalor que vino, solo necesito el auvector en wi
     filewrite << std::scientific << autovalor << std::endl;
-    std::cout << std::scientific << autovalor << std::endl;
 
 		//normalizar autovector con norma 2
 		normalizar(autovector);
@@ -427,6 +426,7 @@ int KNN(Matriz& imagenesTrain, Matriz& imagenesTest, int vecinos,
 
   calcularEstadisticas(imagenesTest, fEstadisticas, fEstPresicion, fEstRecall, fEstF1);
 
+  std::cout << "Hit rate: " << hitRate << std::endl;
   return hitRate; // Esto no sé si es necesario aún
 
 }
@@ -561,11 +561,176 @@ void evaluarTests(std::string fileTestData, std::ofstream& fileTestResult, std::
     init_time();
  
     if (method == 1) {
+	    std::cout << "entre aca | componentes -> " << componentes << std::endl; 
       PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileTestResult);
+      std::cout << "sali ah reee" << std::endl;
     } else {
+      if (method == 2) {
 	std::cout << "entre aca | dimensiones -> " << dimensiones << std::endl; 
       PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileTestResult); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarloi
 	std::cout << "sali ah reee" << std::endl;
+      }
+    }
+    
+    fileEstadisticas << "Iteración: " << z << std::endl;
+    fileEstadisticas << "Vecinos: " << vecinos << std::endl;
+    fileEstadisticas << "dimensiones: " << dimensiones << std::endl;
+    fileEstadisticas << "componentes: " << componentes << std::endl;
+    fileEstadisticas << "particiones: " << particiones << std::endl;
+
+    switch(method) {
+      case 0: { // Método KNN
+
+          KNN(imagenesTrain, imagenesTest, vecinos, fileEstadisticas, fEstPrecision, fEstRecall, fEstF1, fEstHitRate);
+
+          break;
+              
+        }
+
+      case 1: { // Método KNN+PCA
+
+          Matriz wTras(tamImagen, componentes);
+          autovectoresPCA.trasponer(wTras);
+
+          imagenesTest.multiplicarMatrices(wTras, imagenesTestPCA);
+
+          KNN(imagenesTrainPCA, imagenesTestPCA, vecinos, fileEstadisticas, fEstPrecision, fEstRecall, fEstF1, fEstHitRate);
+                
+          break;
+        }
+
+      case 2: { // Método KNN+PLS-DA
+
+        Matriz wTras(tamImagen, dimensiones);
+        autovectoresPLSDA.trasponer(wTras);
+
+        imagenesTest.multiplicarMatrices(wTras, imagenesTestPLSDA);
+
+        KNN(imagenesTrainPLSDA, imagenesTestPLSDA, vecinos, fileEstadisticas, fEstPrecision, fEstRecall, fEstF1, fEstHitRate);
+        break;
+
+        }
+
+      case 3: { // Método KNN+PLS-DA
+
+        Matriz wTras(tamImagen, dimensiones);
+        autovectoresPLSDA.trasponer(wTras);
+
+        imagenesTest.multiplicarMatrices(wTras, imagenesTestPLSDA);
+
+        KNN(imagenesTrainPLSDA, imagenesTestPLSDA, vecinos, fileEstadisticas, fEstPrecision, fEstRecall, fEstF1, fEstHitRate);
+        break;
+
+        }
+
+    }
+
+    ++z;
+    std::cout << z << std::endl; // SOlo uso esto para ver cuantas iteraciones de lineas de archivo hizo
+
+    fileTestResult << "ImageId,Label" << std::endl;
+    for (int k = 1; k <= cantImagenesTest; ++k) {
+      fileTestResult << k << "," << imagenesTestPLSDA.dameEstimacion(k-1) << std::endl;
+    }
+
+  }
+
+  acum += get_time();
+  std::cout << std::fixed << acum << std::endl;
+}
+
+void evaluarTests2(std::string fileTestData, std::ofstream& fileTestResult, std::ofstream& fileEstadisticas, std::ofstream& fEstPrecision, std::ofstream& fEstRecall, std::ofstream& fEstF1, std::ofstream& fEstHitRate, std::string path, int method, int vecinos, int componentes, int dimensiones, int particiones) {
+
+  std::string lineTest;
+  std::string lineTrain;
+  int z = 0;
+
+  std::string train;
+  std::string test;
+
+  train = path.append("train.csv"); 
+  test = path.append("test.csv"); 
+
+  std::ifstream fileTrain (train.c_str());
+  std::ifstream fileTest (test.c_str()); // Hasta aca sólo instancie variables
+
+  int tamImagen = 784;
+  int cantImagenesTest = 28000;
+  int cantImagenesTrain = 42000;
+
+  Matriz imagenesTrain(cantImagenesTrain, tamImagen);
+  Matriz imagenesTrainPCA(cantImagenesTrain, componentes);
+  Matriz imagenesTrainPLSDA(cantImagenesTrain, dimensiones);
+
+  Matriz imagenesTest(cantImagenesTest, tamImagen);
+  Matriz imagenesTestPCA(cantImagenesTest, componentes);
+  Matriz imagenesTestPLSDA(cantImagenesTest, dimensiones);
+
+  getline (fileTrain, lineTrain); // Descarto la primer línea que sólo tiene strings "label, pixel0, ..."
+
+  for (int k = 0; k < cantImagenesTrain; ++k) {
+  
+    getline (fileTrain, lineTrain);
+
+    std::istringstream issTrain(lineTrain);
+
+    int j = 0;
+    int a = 0;
+    std::string s;
+
+    while (getline(issTrain, s, ',')) {
+      if (j == 0) {
+        imagenesTrain.etiquetar(k, atoi(s.c_str()));
+        imagenesTrainPLSDA.etiquetar(k, atoi(s.c_str()));
+        imagenesTrainPCA.etiquetar(k, atoi(s.c_str()));
+        ++j;
+      } else {
+        imagenesTrain[k][a] = std::stod(s);
+        ++a;
+      }
+    }
+
+  }
+
+  getline (fileTest, lineTest); // Descarto la primer línea que sólo tiene strings "label, pixel0, ..."
+
+  for (int k = 0; k < cantImagenesTest; ++k) {
+  
+    getline (fileTest, lineTest);
+
+    std::istringstream issTest(lineTest);
+
+    int j = 0;
+    int a = 0;
+    std::string s;
+
+    while (getline(issTest, s, ',')) {
+      imagenesTest[k][a] = std::stod(s);
+      ++a;
+    }
+  }
+
+    // imagenesTrain tiene en cada fila una imagen para la parte de train Y su correspondiente etiqueta (de 0 a 9)
+    // imagenesTest tiene en cada fila una imagen para la parte de test Y su correspondiente etiqueta (de 0 a 9)
+    // imagenesTrainPSLA tendrá la transformación característica de PSLA
+    // imagenesTrainPCA tendrá la transformación característica de PCA
+    // isTrain tiene para cada imagen (de 0 a cantImagenesTotales) si es parte del train o no
+
+
+    Matriz autovectoresPCA(componentes, tamImagen);
+    Matriz autovectoresPLSDA(dimensiones, tamImagen);
+    init_time();
+ 
+    if (method == 1) {
+	    std::cout << "entre aca | componentes -> " << componentes << std::endl; 
+      PCAMethod(imagenesTrain, imagenesTrainPCA, autovectoresPCA, componentes, fileTestResult);
+      std::cout << "sali ah reee" << std::endl;
+    } else {
+      if (method == 2) {
+	std::cout << "entre aca | dimensiones -> " << dimensiones << std::endl; 
+      PLSDAMethod(imagenesTrain, imagenesTrainPLSDA, autovectoresPLSDA, dimensiones, fileTestResult); // Por ahora le hardcodeo el segundo parametro TODO: ver como cambiarloi
+	std::cout << "sali ah reee" << std::endl;
+      }
     }
     
     fileEstadisticas << "Iteración: " << z << std::endl;
@@ -609,14 +774,22 @@ void evaluarTests(std::string fileTestData, std::ofstream& fileTestResult, std::
 
     }
 
+
+
     ++z;
     std::cout << z << std::endl; // SOlo uso esto para ver cuantas iteraciones de lineas de archivo hizo
 
-  }
-
   acum += get_time();
   std::cout << std::fixed << acum << std::endl;
+
+  fileTestResult << "ImageId,Label" << std::endl;
+  for (int k = 1; k <= cantImagenesTest; ++k) {
+    fileTestResult << k << "," << imagenesTestPLSDA.dameEstimacion(k-1) << std::endl;
+  }
+
 }
+
+
 
 int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::string fileEstadisticas, std::string filePrecision, std::string fileRecall, std::string fileF1, std::string fileHitRate, int method) {
   
@@ -689,7 +862,8 @@ int elegirOpciones(std::string fileTestData, std::string fileTestResult, std::st
       for (int comp = componentes[0]; comp <= componentes[1]; comp+=componentes[2]) {
         for (int dim = dimensiones[0]; dim <= dimensiones[1]; dim+=dimensiones[2]) {
           for (int part = particiones[0]; part <= particiones[1]; part+=particiones[2]) {
-            evaluarTests(fileTestData, fileWrite, fileWrite2, fileWrite3, fileWrite4, fileWrite5, fileWrite6, path, method, vec, comp, dim, part);
+            //evaluarTests(fileTestData, fileWrite, fileWrite2, fileWrite3, fileWrite4, fileWrite5, fileWrite6, path, method, vec, comp, dim, part);
+            evaluarTests2(fileTestData, fileWrite, fileWrite2, fileWrite3, fileWrite4, fileWrite5, fileWrite6, path, method, vec, comp, dim, part);
           }
         }
       }
